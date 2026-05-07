@@ -32,7 +32,11 @@ const copy = {
       authError: "Could not sign in. Check the email and password.",
       invalidCredential: "Wrong password or account method. Try again or create a new account with another email.",
       emailInUse: "This email already has an account. Use Sign in instead.",
-      weakPassword: "Use at least 6 characters for the password."
+      weakPassword: "Use at least 6 characters for the password.",
+      forgotPassword: "Forgot password?",
+      resetSent: "Password reset email sent. Check your inbox.",
+      resetNoEmail: "Enter your email first.",
+      resetUnavailable: "Password reset needs Firebase sync."
     },
     repository: {
       title: "Deal repository",
@@ -271,7 +275,11 @@ const copy = {
       authError: "Não foi possível entrar. Verifique email e senha.",
       invalidCredential: "Senha incorreta ou método de conta diferente. Tente novamente ou crie outra conta com outro email.",
       emailInUse: "Este email já tem conta. Use Entrar.",
-      weakPassword: "Use pelo menos 6 caracteres na senha."
+      weakPassword: "Use pelo menos 6 caracteres na senha.",
+      forgotPassword: "Esqueceu a senha?",
+      resetSent: "Email de redefinição enviado. Verifique sua caixa de entrada.",
+      resetNoEmail: "Digite seu email primeiro.",
+      resetUnavailable: "Redefinir senha precisa do Firebase."
     },
     repository: {
       title: "Repositório de negócios",
@@ -511,7 +519,11 @@ const copy = {
       authError: "No se pudo iniciar sesión. Revisa email y contraseña.",
       invalidCredential: "Contraseña incorrecta o método de cuenta distinto. Intenta de nuevo o crea otra cuenta con otro email.",
       emailInUse: "Este email ya tiene una cuenta. Usa Iniciar sesión.",
-      weakPassword: "Usa al menos 6 caracteres para la contraseña."
+      weakPassword: "Usa al menos 6 caracteres para la contraseña.",
+      forgotPassword: "¿Olvidaste tu contraseña?",
+      resetSent: "Email de recuperación enviado. Revisa tu bandeja.",
+      resetNoEmail: "Escribe tu email primero.",
+      resetUnavailable: "Recuperar contraseña requiere Firebase."
     },
     repository: {
       title: "Repositorio de oportunidades",
@@ -919,6 +931,13 @@ function friendlyAuthError(error) {
   return text.authError;
 }
 
+function showAuthMessage(message, tone = "error") {
+  const errorNode = document.querySelector("#authError");
+  errorNode.textContent = message;
+  errorNode.dataset.tone = tone;
+  errorNode.hidden = false;
+}
+
 function loadState() {
   try {
     const stored = JSON.parse(localStorage.getItem("meddpicc-coach-state"));
@@ -1025,6 +1044,7 @@ function renderStaticCopy() {
   setText("#closeAuthModal", text.auth.close);
   setText("#authSubmit", text.auth.submit);
   setText("#authCreate", text.auth.create);
+  setText("#forgotPasswordButton", text.auth.forgotPassword);
   document.querySelectorAll(".auth-form label span")[0].textContent = text.auth.name;
   document.querySelectorAll(".auth-form label span")[1].textContent = text.auth.email;
   document.querySelectorAll(".auth-form label span")[2].textContent = text.auth.password;
@@ -1410,6 +1430,25 @@ document.querySelectorAll("[data-auth-action]").forEach((button) => {
   });
 });
 
+document.querySelector("#forgotPasswordButton").addEventListener("click", async () => {
+  const email = document.querySelector("#authEmail").value.trim();
+  if (!email) {
+    showAuthMessage(t().auth.resetNoEmail);
+    return;
+  }
+  if (!firebaseState.enabled) {
+    showAuthMessage(t().auth.resetUnavailable);
+    return;
+  }
+  try {
+    await loadFirebase();
+    await firebaseState.auth.sendPasswordResetEmail(email);
+    showAuthMessage(t().auth.resetSent, "success");
+  } catch (error) {
+    showAuthMessage(friendlyAuthError(error));
+  }
+});
+
 authForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const errorNode = document.querySelector("#authError");
@@ -1417,6 +1456,7 @@ authForm.addEventListener("submit", async (event) => {
   const email = document.querySelector("#authEmail").value.trim();
   const password = document.querySelector("#authPassword").value;
   errorNode.hidden = true;
+  errorNode.dataset.tone = "error";
   try {
     if (firebaseState.enabled) {
       if (authAction === "create") {
