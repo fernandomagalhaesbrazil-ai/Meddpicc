@@ -1,124 +1,634 @@
-const elements = [
-  {
-    key: "metrics",
-    letter: "M",
-    name: "Metrics",
-    question: "Can you quantify the business impact and value case?",
-    guidance:
-      "Move from vague outcomes to numbers: revenue gained, cost removed, risk reduced, or time saved.",
-    prompts: [
-      "What happens financially if the problem stays unsolved?",
-      "Which metric will the buyer use to prove success?",
-      "Can the customer confirm the calculation in their own words?"
-    ]
-  },
-  {
-    key: "economicBuyer",
-    letter: "E",
-    name: "Economic Buyer",
-    question: "Have you met the person who can release budget and say yes?",
-    guidance:
-      "Do not let access be theoretical. Confirm authority, priorities, and the reason this matters now.",
-    prompts: [
-      "Who owns the budget and what outcome are they measured on?",
-      "What would make them personally sponsor this change?",
-      "How can your champion help you earn a direct meeting?"
-    ]
-  },
-  {
-    key: "decisionCriteria",
-    letter: "D",
-    name: "Decision Criteria",
-    question: "Do you know and influence the standards used to choose?",
-    guidance:
-      "Criteria that you do not shape can quietly become criteria built for a competitor.",
-    prompts: [
-      "What are the must-have capabilities and why?",
-      "Which requirements are weighted highest?",
-      "Where can you introduce criteria tied to business impact?"
-    ]
-  },
-  {
-    key: "decisionProcess",
-    letter: "D",
-    name: "Decision Process",
-    question: "Can you map every step from evaluation to signature?",
-    guidance:
-      "A real process has names, dates, meetings, approvals, and exit criteria.",
-    prompts: [
-      "What happens after this meeting?",
-      "Who else reviews the recommendation?",
-      "What date must each step happen to hit the close date?"
-    ]
-  },
-  {
-    key: "paperProcess",
-    letter: "P",
-    name: "Paper Process",
-    question: "Have legal, procurement, security, and contract steps been surfaced?",
-    guidance:
-      "Late-stage deals often slip after verbal yes. Bring paperwork into the sales motion early.",
-    prompts: [
-      "Who owns procurement and legal review?",
-      "Can we review redline expectations before selection?",
-      "What security or vendor steps create calendar risk?"
-    ]
-  },
-  {
-    key: "identifyPain",
-    letter: "I",
-    name: "Identify Pain",
-    question: "Is the pain specific, owned, urgent, and expensive?",
-    guidance:
-      "Real pain has a business consequence and an executive who cares about that consequence.",
-    prompts: [
-      "What is broken today and who feels it?",
-      "Why is solving it urgent this quarter?",
-      "How does this pain affect the buyer personally?"
-    ]
-  },
-  {
-    key: "champion",
-    letter: "C",
-    name: "Champion",
-    question: "Do you have an internal seller with power and personal gain?",
-    guidance:
-      "A champion sells when you are not in the room. Test them before you bet the forecast on them.",
-    prompts: [
-      "What have they done that proves influence?",
-      "What is their personal win?",
-      "Will they coach you on people, process, and politics?"
-    ]
-  },
-  {
-    key: "competition",
-    letter: "C",
-    name: "Competition",
-    question: "Do you know every alternative, including no decision?",
-    guidance:
-      "Compete against the full field: vendors, internal projects, budget delay, and the status quo.",
-    prompts: [
-      "Who or what are we really competing against?",
-      "Why would the customer choose to do nothing?",
-      "Where is our proof stronger than the alternatives?"
-    ]
-  }
+const elementKeys = [
+  "metrics",
+  "economicBuyer",
+  "decisionCriteria",
+  "decisionProcess",
+  "paperProcess",
+  "identifyPain",
+  "champion",
+  "competition"
 ];
 
-const labels = ["None", "Partial", "Mostly", "Confirmed"];
-const defaultState = {
-  dealName: "Acme expansion",
-  dealStage: "Proposal",
-  closeDate: "",
-  scores: Object.fromEntries(elements.map((element) => [element.key, 0])),
-  notes: Object.fromEntries(elements.map((element) => [element.key, ""])),
-  chat: [
-    {
-      role: "coach",
-      text:
-        "Bring me a real deal and I will pressure-test it. Start with the element that feels weakest, or ask for a next-call plan."
+const copy = {
+  en: {
+    htmlLang: "en",
+    nav: { signIn: "Sign In" },
+    heroBadge: "⚡ Built for B2B Sales Teams",
+    heroTitle: "Win More Deals with <span>MEDDPICC</span> Discipline",
+    heroText:
+      "A structured deal coaching platform that gives reps a clear qualification scorecard and managers real-time pipeline visibility-so nothing slips through the cracks.",
+    heroButtons: {
+      start: "Get Started Free ›",
+      signIn: "Sign In",
+      example: "See a Live Example"
+    },
+    criteriaTitle: "Every element, tracked & scored",
+    criteriaText:
+      "Score each of the 8 MEDDPICC criteria with Red / Yellow / Green status so every rep knows exactly where their deal stands.",
+    workspaceEyebrow: "Live workspace",
+    workspaceTitle: "Coach, score, and de-risk your active deal",
+    tabs: {
+      coach: "Coach",
+      scorecard: "Scorecard",
+      "action-plan": "Action Plan",
+      library: "Playbook"
+    },
+    deal: {
+      eyebrow: "Current deal",
+      reset: "Reset",
+      opportunity: "Opportunity",
+      defaultName: "Acme expansion",
+      untitled: "Untitled deal",
+      stage: "Stage",
+      closeDate: "Close date"
+    },
+    stages: {
+      discovery: "Discovery",
+      validation: "Validation",
+      proposal: "Proposal",
+      procurement: "Procurement",
+      commit: "Commit"
+    },
+    health: {
+      controlled: "Controlled",
+      promising: "Promising",
+      risky: "Risky",
+      unqualified: "Unqualified"
+    },
+    coach: {
+      topEyebrow: "24/7 deal review",
+      eyebrow: "AI-style coaching",
+      title: "Ask about your next move",
+      clear: "Clear",
+      placeholder: "Ask: How do I test my champion before procurement?",
+      submit: "Coach Me",
+      defaultMessage:
+        "Bring me a real deal and I will pressure-test it. Start with the element that feels weakest, or ask for a next-call plan.",
+      avatarUser: "You",
+      avatarAi: "AI",
+      snapshotEyebrow: "Deal snapshot",
+      snapshotTitle: "Qualification gaps",
+      prompts: [
+        ["Diagnose risk", "Diagnose the biggest risk in this deal."],
+        ["Economic Buyer", "Give me questions for the Economic Buyer."],
+        ["Next call plan", "Create a next call plan for this opportunity."]
+      ]
+    },
+    scorecard: {
+      eyebrow: "Honest inspection",
+      title: "Score each MEDDPICC element",
+      export: "Export Summary",
+      notesPlaceholder: "Evidence, buyer quotes, missing proof...",
+      scoreLabel: "score"
+    },
+    plan: {
+      eyebrow: "Generated plan",
+      title: "Actions to de-risk the deal",
+      regenerate: "Regenerate",
+      priorities: { high: "high", medium: "medium", low: "low" },
+      evidence: "evidence",
+      body: (ask, dealName) =>
+        `${ask} Capture the answer in the notes and confirm the next owner/date before advancing ${dealName}.`
+    },
+    library: {
+      eyebrow: "Coaching playbook",
+      title: "Element-by-element guidance"
+    },
+    labels: ["None", "Partial", "Mostly", "Confirmed"],
+    export: {
+      deal: "Deal",
+      stage: "Stage",
+      closeDate: "Close date",
+      notSet: "Not set",
+      health: "Qualification health",
+      notes: "Notes",
+      nextActions: "Next actions",
+      copied: "Summary copied to clipboard. Use it for a deal review or manager 1:1."
+    },
+    elements: {
+      metrics: {
+        letter: "M",
+        name: "Metrics",
+        question: "Can you quantify the business impact and value case?",
+        guidance:
+          "Move from vague outcomes to numbers: revenue gained, cost removed, risk reduced, or time saved.",
+        prompts: [
+          "What happens financially if the problem stays unsolved?",
+          "Which metric will the buyer use to prove success?",
+          "Can the customer confirm the calculation in their own words?"
+        ]
+      },
+      economicBuyer: {
+        letter: "E",
+        name: "Economic Buyer",
+        question: "Have you met the person who can release budget and say yes?",
+        guidance:
+          "Do not let access be theoretical. Confirm authority, priorities, and the reason this matters now.",
+        prompts: [
+          "Who owns the budget and what outcome are they measured on?",
+          "What would make them personally sponsor this change?",
+          "How can your champion help you earn a direct meeting?"
+        ]
+      },
+      decisionCriteria: {
+        letter: "D",
+        name: "Decision Criteria",
+        question: "Do you know and influence the standards used to choose?",
+        guidance: "Criteria that you do not shape can quietly become criteria built for a competitor.",
+        prompts: [
+          "What are the must-have capabilities and why?",
+          "Which requirements are weighted highest?",
+          "Where can you introduce criteria tied to business impact?"
+        ]
+      },
+      decisionProcess: {
+        letter: "D",
+        name: "Decision Process",
+        question: "Can you map every step from evaluation to signature?",
+        guidance: "A real process has names, dates, meetings, approvals, and exit criteria.",
+        prompts: [
+          "What happens after this meeting?",
+          "Who else reviews the recommendation?",
+          "What date must each step happen to hit the close date?"
+        ]
+      },
+      paperProcess: {
+        letter: "P",
+        name: "Paper Process",
+        question: "Have legal, procurement, security, and contract steps been surfaced?",
+        guidance:
+          "Late-stage deals often slip after verbal yes. Bring paperwork into the sales motion early.",
+        prompts: [
+          "Who owns procurement and legal review?",
+          "Can we review redline expectations before selection?",
+          "What security or vendor steps create calendar risk?"
+        ]
+      },
+      identifyPain: {
+        letter: "I",
+        name: "Identify Pain",
+        question: "Is the pain specific, owned, urgent, and expensive?",
+        guidance:
+          "Real pain has a business consequence and an executive who cares about that consequence.",
+        prompts: [
+          "What is broken today and who feels it?",
+          "Why is solving it urgent this quarter?",
+          "How does this pain affect the buyer personally?"
+        ]
+      },
+      champion: {
+        letter: "C",
+        name: "Champion",
+        question: "Do you have an internal seller with power and personal gain?",
+        guidance:
+          "A champion sells when you are not in the room. Test them before you bet the forecast on them.",
+        prompts: [
+          "What have they done that proves influence?",
+          "What is their personal win?",
+          "Will they coach you on people, process, and politics?"
+        ]
+      },
+      competition: {
+        letter: "C",
+        name: "Competition",
+        question: "Do you know every alternative, including no decision?",
+        guidance:
+          "Compete against the full field: vendors, internal projects, budget delay, and the status quo.",
+        prompts: [
+          "Who or what are we really competing against?",
+          "Why would the customer choose to do nothing?",
+          "Where is our proof stronger than the alternatives?"
+        ]
+      }
+    },
+    response: {
+      economic: (dealName) =>
+        `Your next move is to earn direct Economic Buyer access, not just ask your champion to relay messages.\nAsk: "Who owns the business outcome and budget if this works?" Then ask your champion to help frame a meeting around ${dealName}'s quantified impact.\nDo not forecast this as controlled until the Economic Buyer confirms the pain, priority, and decision timing.`,
+      champion: (nextName) =>
+        `Test the champion with action, not enthusiasm.\nAsk them to map the decision team, explain the political risk, and introduce you to one stakeholder you have not met. If they cannot or will not do that, treat Champion as unproven.\nTie their personal win to the ${nextName} gap so they have a reason to sell internally.`,
+      risk: (health, percent, nextName, secondName) =>
+        `The deal is ${health.toLowerCase()} at ${percent}% qualified. The biggest exposed areas are ${nextName} and ${secondName}.\nYour manager will ask for proof, not confidence. Bring buyer-confirmed evidence for those two elements before you advance the stage.\nRecommended next step: schedule a mutual plan review and validate dates, owners, and exit criteria.`,
+      default: (dealName, nextName, guidance, prompt) =>
+        `For ${dealName}, focus on ${nextName} first. ${guidance}\nUse this call opener: "${prompt}"\nExit the meeting with one confirmed fact, one named owner, and one dated next step. If the customer cannot provide those, keep the opportunity out of commit.`
     }
-  ]
+  },
+  pt: {
+    htmlLang: "pt-BR",
+    nav: { signIn: "Entrar" },
+    heroBadge: "⚡ Criado para equipes de vendas B2B",
+    heroTitle: "Ganhe Mais Negócios com Disciplina <span>MEDDPICC</span>",
+    heroText:
+      "Uma plataforma estruturada de coaching de negócios que dá aos reps um scorecard claro de qualificação e aos gestores visibilidade em tempo real do pipeline-para que nada passe despercebido.",
+    heroButtons: {
+      start: "Começar grátis ›",
+      signIn: "Entrar",
+      example: "Ver exemplo ao vivo"
+    },
+    criteriaTitle: "Cada elemento, acompanhado e pontuado",
+    criteriaText:
+      "Pontue os 8 critérios MEDDPICC com status vermelho / amarelo / verde para que cada rep saiba exatamente onde o negócio está.",
+    workspaceEyebrow: "Área de trabalho",
+    workspaceTitle: "Faça coaching, pontue e reduza o risco do seu negócio ativo",
+    tabs: {
+      coach: "Coach",
+      scorecard: "Scorecard",
+      "action-plan": "Plano de Ação",
+      library: "Playbook"
+    },
+    deal: {
+      eyebrow: "Negócio atual",
+      reset: "Reiniciar",
+      opportunity: "Oportunidade",
+      defaultName: "Expansão Acme",
+      untitled: "Negócio sem nome",
+      stage: "Etapa",
+      closeDate: "Data de fechamento"
+    },
+    stages: {
+      discovery: "Descoberta",
+      validation: "Validação",
+      proposal: "Proposta",
+      procurement: "Compras",
+      commit: "Commit"
+    },
+    health: {
+      controlled: "Controlado",
+      promising: "Promissor",
+      risky: "Arriscado",
+      unqualified: "Não qualificado"
+    },
+    coach: {
+      topEyebrow: "Revisão de negócio 24/7",
+      eyebrow: "Coaching estilo IA",
+      title: "Pergunte sobre o próximo movimento",
+      clear: "Limpar",
+      placeholder: "Pergunte: Como testo meu champion antes de compras?",
+      submit: "Me orientar",
+      defaultMessage:
+        "Traga um negócio real e eu vou testá-lo com rigor. Comece pelo elemento que parece mais fraco ou peça um plano para a próxima call.",
+      avatarUser: "Você",
+      avatarAi: "IA",
+      snapshotEyebrow: "Resumo do negócio",
+      snapshotTitle: "Lacunas de qualificação",
+      prompts: [
+        ["Diagnosticar risco", "Diagnostique o maior risco deste negócio."],
+        ["Comprador econômico", "Me dê perguntas para o Comprador Econômico."],
+        ["Plano da próxima call", "Crie um plano para a próxima call desta oportunidade."]
+      ]
+    },
+    scorecard: {
+      eyebrow: "Inspeção honesta",
+      title: "Pontue cada elemento MEDDPICC",
+      export: "Exportar resumo",
+      notesPlaceholder: "Evidências, falas do comprador, provas faltando...",
+      scoreLabel: "pontuação"
+    },
+    plan: {
+      eyebrow: "Plano gerado",
+      title: "Ações para reduzir o risco do negócio",
+      regenerate: "Regenerar",
+      priorities: { high: "alta", medium: "média", low: "baixa" },
+      evidence: "evidência",
+      body: (ask, dealName) =>
+        `${ask} Registre a resposta nas notas e confirme o próximo responsável/data antes de avançar ${dealName}.`
+    },
+    library: {
+      eyebrow: "Playbook de coaching",
+      title: "Orientação elemento por elemento"
+    },
+    labels: ["Nenhum", "Parcial", "Quase", "Confirmado"],
+    export: {
+      deal: "Negócio",
+      stage: "Etapa",
+      closeDate: "Data de fechamento",
+      notSet: "Não definida",
+      health: "Saúde da qualificação",
+      notes: "Notas",
+      nextActions: "Próximas ações",
+      copied: "Resumo copiado para a área de transferência. Use em uma revisão de negócio ou 1:1 com gestor."
+    },
+    elements: {
+      metrics: {
+        letter: "M",
+        name: "Métricas",
+        question: "Você consegue quantificar o impacto de negócio e o caso de valor?",
+        guidance:
+          "Saia de resultados vagos para números: receita gerada, custo removido, risco reduzido ou tempo economizado.",
+        prompts: [
+          "O que acontece financeiramente se o problema continuar?",
+          "Qual métrica o comprador usará para provar sucesso?",
+          "O cliente confirma o cálculo com as próprias palavras?"
+        ]
+      },
+      economicBuyer: {
+        letter: "E",
+        name: "Comprador Econômico",
+        question: "Você já falou com a pessoa que libera orçamento e pode dizer sim?",
+        guidance:
+          "Não deixe o acesso no campo teórico. Confirme autoridade, prioridades e por que isso importa agora.",
+        prompts: [
+          "Quem controla o orçamento e qual resultado essa pessoa precisa entregar?",
+          "O que faria essa pessoa patrocinar a mudança?",
+          "Como seu champion pode ajudar você a conseguir uma reunião direta?"
+        ]
+      },
+      decisionCriteria: {
+        letter: "D",
+        name: "Critérios de Decisão",
+        question: "Você conhece e influencia os critérios usados para escolher?",
+        guidance:
+          "Critérios que você não molda podem virar critérios desenhados para um concorrente.",
+        prompts: [
+          "Quais capacidades são obrigatórias e por quê?",
+          "Quais requisitos têm maior peso?",
+          "Onde você pode introduzir critérios ligados ao impacto de negócio?"
+        ]
+      },
+      decisionProcess: {
+        letter: "D",
+        name: "Processo de Decisão",
+        question: "Você mapeia cada etapa da avaliação até a assinatura?",
+        guidance: "Um processo real tem nomes, datas, reuniões, aprovações e critérios de saída.",
+        prompts: [
+          "O que acontece depois desta reunião?",
+          "Quem mais revisa a recomendação?",
+          "Em que data cada etapa precisa acontecer para bater a data de fechamento?"
+        ]
+      },
+      paperProcess: {
+        letter: "P",
+        name: "Processo de Papel",
+        question: "Jurídico, compras, segurança e contrato já apareceram no plano?",
+        guidance:
+          "Negócios avançados escorregam depois do sim verbal. Traga a papelada cedo para o processo comercial.",
+        prompts: [
+          "Quem cuida de compras e revisão jurídica?",
+          "Podemos revisar expectativas de redline antes da escolha?",
+          "Quais etapas de segurança ou cadastro criam risco de calendário?"
+        ]
+      },
+      identifyPain: {
+        letter: "I",
+        name: "Identificar Dor",
+        question: "A dor é específica, tem dono, é urgente e cara?",
+        guidance:
+          "Dor real tem consequência de negócio e um executivo que se importa com essa consequência.",
+        prompts: [
+          "O que está quebrado hoje e quem sente isso?",
+          "Por que resolver isso é urgente neste trimestre?",
+          "Como essa dor afeta pessoalmente o comprador?"
+        ]
+      },
+      champion: {
+        letter: "C",
+        name: "Champion",
+        question: "Você tem um vendedor interno com poder e ganho pessoal?",
+        guidance:
+          "Um champion vende quando você não está na sala. Teste antes de apostar o forecast nele.",
+        prompts: [
+          "O que essa pessoa fez que prova influência?",
+          "Qual é o ganho pessoal dela?",
+          "Ela vai te orientar sobre pessoas, processo e política interna?"
+        ]
+      },
+      competition: {
+        letter: "C",
+        name: "Concorrência",
+        question: "Você conhece todas as alternativas, inclusive não decidir?",
+        guidance:
+          "Compita contra todo o campo: fornecedores, projetos internos, atraso de orçamento e status quo.",
+        prompts: [
+          "Contra quem ou contra o quê estamos realmente competindo?",
+          "Por que o cliente escolheria não fazer nada?",
+          "Onde nossa prova é mais forte que as alternativas?"
+        ]
+      }
+    },
+    response: {
+      economic: (dealName) =>
+        `Seu próximo movimento é conseguir acesso direto ao Comprador Econômico, não apenas pedir ao champion para repassar mensagens.\nPergunte: "Quem é dono do resultado de negócio e do orçamento se isso funcionar?" Depois peça ao champion para ajudar a estruturar uma reunião em torno do impacto quantificado de ${dealName}.\nNão coloque este negócio como controlado até o Comprador Econômico confirmar dor, prioridade e timing de decisão.`,
+      champion: (nextName) =>
+        `Teste o champion com ação, não com entusiasmo.\nPeça para mapear o comitê de decisão, explicar o risco político e apresentar você a um stakeholder que ainda não conhece. Se não conseguir ou não quiser fazer isso, trate Champion como não comprovado.\nConecte o ganho pessoal dele à lacuna de ${nextName} para que tenha motivo para vender internamente.`,
+      risk: (health, percent, nextName, secondName) =>
+        `O negócio está ${health.toLowerCase()} com ${percent}% de qualificação. As maiores áreas expostas são ${nextName} e ${secondName}.\nSeu gestor vai pedir prova, não confiança. Traga evidências confirmadas pelo comprador para esses dois elementos antes de avançar a etapa.\nPróximo passo recomendado: marque uma revisão de plano mútuo e valide datas, responsáveis e critérios de saída.`,
+      default: (dealName, nextName, guidance, prompt) =>
+        `Para ${dealName}, foque primeiro em ${nextName}. ${guidance}\nUse esta abertura na call: "${prompt}"\nSaia da reunião com um fato confirmado, um responsável nomeado e um próximo passo com data. Se o cliente não conseguir fornecer isso, mantenha a oportunidade fora de commit.`
+    }
+  },
+  es: {
+    htmlLang: "es",
+    nav: { signIn: "Iniciar sesión" },
+    heroBadge: "⚡ Creado para equipos de ventas B2B",
+    heroTitle: "Gana Más Negocios con Disciplina <span>MEDDPICC</span>",
+    heroText:
+      "Una plataforma estructurada de coaching de oportunidades que da a los reps un scorecard claro de calificación y a los managers visibilidad del pipeline en tiempo real-para que nada se escape.",
+    heroButtons: {
+      start: "Comenzar gratis ›",
+      signIn: "Iniciar sesión",
+      example: "Ver ejemplo en vivo"
+    },
+    criteriaTitle: "Cada elemento, seguido y puntuado",
+    criteriaText:
+      "Puntúa los 8 criterios MEDDPICC con estado rojo / amarillo / verde para que cada rep sepa exactamente dónde está su oportunidad.",
+    workspaceEyebrow: "Espacio de trabajo",
+    workspaceTitle: "Haz coaching, puntúa y reduce el riesgo de tu oportunidad activa",
+    tabs: {
+      coach: "Coach",
+      scorecard: "Scorecard",
+      "action-plan": "Plan de Acción",
+      library: "Playbook"
+    },
+    deal: {
+      eyebrow: "Oportunidad actual",
+      reset: "Reiniciar",
+      opportunity: "Oportunidad",
+      defaultName: "Expansión Acme",
+      untitled: "Oportunidad sin nombre",
+      stage: "Etapa",
+      closeDate: "Fecha de cierre"
+    },
+    stages: {
+      discovery: "Descubrimiento",
+      validation: "Validación",
+      proposal: "Propuesta",
+      procurement: "Compras",
+      commit: "Commit"
+    },
+    health: {
+      controlled: "Controlada",
+      promising: "Prometedora",
+      risky: "Riesgosa",
+      unqualified: "No calificada"
+    },
+    coach: {
+      topEyebrow: "Revisión de oportunidad 24/7",
+      eyebrow: "Coaching estilo IA",
+      title: "Pregunta por tu próximo movimiento",
+      clear: "Limpiar",
+      placeholder: "Pregunta: ¿Cómo pruebo a mi champion antes de compras?",
+      submit: "Coachéame",
+      defaultMessage:
+        "Trae una oportunidad real y la pondré a prueba. Empieza por el elemento que se siente más débil o pide un plan para la próxima llamada.",
+      avatarUser: "Tú",
+      avatarAi: "IA",
+      snapshotEyebrow: "Resumen de la oportunidad",
+      snapshotTitle: "Brechas de calificación",
+      prompts: [
+        ["Diagnosticar riesgo", "Diagnostica el mayor riesgo de esta oportunidad."],
+        ["Comprador económico", "Dame preguntas para el Comprador Económico."],
+        ["Plan de próxima llamada", "Crea un plan para la próxima llamada de esta oportunidad."]
+      ]
+    },
+    scorecard: {
+      eyebrow: "Inspección honesta",
+      title: "Puntúa cada elemento MEDDPICC",
+      export: "Exportar resumen",
+      notesPlaceholder: "Evidencia, frases del comprador, pruebas faltantes...",
+      scoreLabel: "puntuación"
+    },
+    plan: {
+      eyebrow: "Plan generado",
+      title: "Acciones para reducir el riesgo de la oportunidad",
+      regenerate: "Regenerar",
+      priorities: { high: "alta", medium: "media", low: "baja" },
+      evidence: "evidencia",
+      body: (ask, dealName) =>
+        `${ask} Registra la respuesta en las notas y confirma el próximo responsable/fecha antes de avanzar ${dealName}.`
+    },
+    library: {
+      eyebrow: "Playbook de coaching",
+      title: "Guía elemento por elemento"
+    },
+    labels: ["Ninguno", "Parcial", "Casi", "Confirmado"],
+    export: {
+      deal: "Oportunidad",
+      stage: "Etapa",
+      closeDate: "Fecha de cierre",
+      notSet: "No definida",
+      health: "Salud de calificación",
+      notes: "Notas",
+      nextActions: "Próximas acciones",
+      copied:
+        "Resumen copiado al portapapeles. Úsalo en una revisión de oportunidad o en un 1:1 con tu manager."
+    },
+    elements: {
+      metrics: {
+        letter: "M",
+        name: "Métricas",
+        question: "¿Puedes cuantificar el impacto de negocio y el caso de valor?",
+        guidance:
+          "Pasa de resultados vagos a números: ingresos ganados, costos eliminados, riesgo reducido o tiempo ahorrado.",
+        prompts: [
+          "¿Qué pasa financieramente si el problema no se resuelve?",
+          "¿Qué métrica usará el comprador para probar el éxito?",
+          "¿Puede el cliente confirmar el cálculo con sus propias palabras?"
+        ]
+      },
+      economicBuyer: {
+        letter: "E",
+        name: "Comprador Económico",
+        question: "¿Has hablado con la persona que puede liberar presupuesto y decir que sí?",
+        guidance:
+          "No dejes el acceso en teoría. Confirma autoridad, prioridades y por qué esto importa ahora.",
+        prompts: [
+          "¿Quién controla el presupuesto y qué resultado debe entregar?",
+          "¿Qué haría que patrocine personalmente este cambio?",
+          "¿Cómo puede tu champion ayudarte a conseguir una reunión directa?"
+        ]
+      },
+      decisionCriteria: {
+        letter: "D",
+        name: "Criterios de Decisión",
+        question: "¿Conoces e influyes los criterios usados para elegir?",
+        guidance:
+          "Los criterios que no moldeas pueden convertirse en criterios hechos para un competidor.",
+        prompts: [
+          "¿Qué capacidades son imprescindibles y por qué?",
+          "¿Qué requisitos pesan más?",
+          "¿Dónde puedes introducir criterios ligados al impacto de negocio?"
+        ]
+      },
+      decisionProcess: {
+        letter: "D",
+        name: "Proceso de Decisión",
+        question: "¿Puedes mapear cada paso desde la evaluación hasta la firma?",
+        guidance: "Un proceso real tiene nombres, fechas, reuniones, aprobaciones y criterios de salida.",
+        prompts: [
+          "¿Qué ocurre después de esta reunión?",
+          "¿Quién más revisa la recomendación?",
+          "¿En qué fecha debe ocurrir cada paso para cumplir la fecha de cierre?"
+        ]
+      },
+      paperProcess: {
+        letter: "P",
+        name: "Proceso de Papel",
+        question: "¿Legal, compras, seguridad y contrato ya están incluidos?",
+        guidance:
+          "Las oportunidades avanzadas suelen moverse después del sí verbal. Incorpora la documentación temprano.",
+        prompts: [
+          "¿Quién lidera compras y revisión legal?",
+          "¿Podemos revisar expectativas de redlines antes de la selección?",
+          "¿Qué pasos de seguridad o alta de proveedor crean riesgo de calendario?"
+        ]
+      },
+      identifyPain: {
+        letter: "I",
+        name: "Identificar Dolor",
+        question: "¿El dolor es específico, tiene dueño, es urgente y caro?",
+        guidance:
+          "El dolor real tiene una consecuencia de negocio y un ejecutivo que se preocupa por esa consecuencia.",
+        prompts: [
+          "¿Qué está roto hoy y quién lo siente?",
+          "¿Por qué resolverlo es urgente este trimestre?",
+          "¿Cómo afecta este dolor personalmente al comprador?"
+        ]
+      },
+      champion: {
+        letter: "C",
+        name: "Champion",
+        question: "¿Tienes un vendedor interno con poder y ganancia personal?",
+        guidance:
+          "Un champion vende cuando no estás en la sala. Pruébalo antes de apostar el forecast.",
+        prompts: [
+          "¿Qué ha hecho que pruebe influencia?",
+          "¿Cuál es su ganancia personal?",
+          "¿Te guiará sobre personas, proceso y política interna?"
+        ]
+      },
+      competition: {
+        letter: "C",
+        name: "Competencia",
+        question: "¿Conoces todas las alternativas, incluida no decidir?",
+        guidance:
+          "Compite contra todo el campo: proveedores, proyectos internos, retraso de presupuesto y status quo.",
+        prompts: [
+          "¿Contra quién o contra qué competimos realmente?",
+          "¿Por qué el cliente elegiría no hacer nada?",
+          "¿Dónde nuestra prueba es más fuerte que las alternativas?"
+        ]
+      }
+    },
+    response: {
+      economic: (dealName) =>
+        `Tu próximo movimiento es conseguir acceso directo al Comprador Económico, no solo pedirle al champion que transmita mensajes.\nPregunta: "¿Quién es dueño del resultado de negocio y del presupuesto si esto funciona?" Luego pide al champion que ayude a enmarcar una reunión alrededor del impacto cuantificado de ${dealName}.\nNo pronostiques esta oportunidad como controlada hasta que el Comprador Económico confirme dolor, prioridad y timing de decisión.`,
+      champion: (nextName) =>
+        `Prueba al champion con acción, no con entusiasmo.\nPídele que mapee el equipo de decisión, explique el riesgo político y te presente a un stakeholder que aún no conoces. Si no puede o no quiere hacerlo, trata Champion como no probado.\nConecta su ganancia personal con la brecha de ${nextName} para que tenga razón para vender internamente.`,
+      risk: (health, percent, nextName, secondName) =>
+        `La oportunidad está ${health.toLowerCase()} con ${percent}% de calificación. Las áreas más expuestas son ${nextName} y ${secondName}.\nTu manager pedirá prueba, no confianza. Trae evidencia confirmada por el comprador para esos dos elementos antes de avanzar de etapa.\nPróximo paso recomendado: agenda una revisión del plan mutuo y valida fechas, responsables y criterios de salida.`,
+      default: (dealName, nextName, guidance, prompt) =>
+        `Para ${dealName}, enfócate primero en ${nextName}. ${guidance}\nUsa esta apertura en la llamada: "${prompt}"\nSal de la reunión con un hecho confirmado, un responsable nombrado y un próximo paso con fecha. Si el cliente no puede dar eso, mantén la oportunidad fuera de commit.`
+    }
+  }
+};
+
+const defaultState = {
+  lang: "en",
+  dealName: "Acme expansion",
+  dealStage: "proposal",
+  closeDate: "",
+  scores: Object.fromEntries(elementKeys.map((key) => [key, 0])),
+  notes: Object.fromEntries(elementKeys.map((key) => [key, ""])),
+  chat: []
 };
 
 let state = loadState();
@@ -137,10 +647,40 @@ const planList = document.querySelector("#planList");
 const chatWindow = document.querySelector("#chatWindow");
 const messageTemplate = document.querySelector("#messageTemplate");
 
+function t() {
+  return copy[state.lang] || copy.en;
+}
+
+function elements() {
+  const text = t();
+  return elementKeys.map((key) => ({ key, ...text.elements[key] }));
+}
+
+function defaultChat() {
+  return [{ role: "coach", text: t().coach.defaultMessage, systemDefault: true }];
+}
+
+function normalizeStage(value) {
+  const map = {
+    Discovery: "discovery",
+    Validation: "validation",
+    Proposal: "proposal",
+    Procurement: "procurement",
+    Commit: "commit"
+  };
+  return map[value] || value || "proposal";
+}
+
 function loadState() {
   try {
     const stored = JSON.parse(localStorage.getItem("meddpicc-coach-state"));
-    return { ...defaultState, ...stored };
+    const next = { ...defaultState, ...stored };
+    next.lang = copy[next.lang] ? next.lang : "en";
+    next.dealStage = normalizeStage(next.dealStage);
+    next.scores = { ...defaultState.scores, ...next.scores };
+    next.notes = { ...defaultState.notes, ...next.notes };
+    if (!Array.isArray(next.chat) || next.chat.length === 0) next.chat = [];
+    return next;
   } catch {
     return structuredClone(defaultState);
   }
@@ -159,23 +699,83 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+function setText(selector, value) {
+  const node = document.querySelector(selector);
+  if (node) node.textContent = value;
+}
+
+function setHtml(selector, value) {
+  const node = document.querySelector(selector);
+  if (node) node.innerHTML = value;
+}
+
 function scorePercent() {
-  const max = elements.length * 3;
-  const total = elements.reduce((sum, element) => sum + Number(state.scores[element.key] || 0), 0);
+  const max = elementKeys.length * 3;
+  const total = elementKeys.reduce((sum, key) => sum + Number(state.scores[key] || 0), 0);
   return Math.round((total / max) * 100);
 }
 
 function healthText(percent) {
-  if (percent >= 82) return "Controlled";
-  if (percent >= 62) return "Promising";
-  if (percent >= 38) return "Risky";
-  return "Unqualified";
+  const health = t().health;
+  if (percent >= 82) return health.controlled;
+  if (percent >= 62) return health.promising;
+  if (percent >= 38) return health.risky;
+  return health.unqualified;
 }
 
 function weakestElements(limit = 3) {
-  return [...elements]
+  return elements()
     .sort((a, b) => state.scores[a.key] - state.scores[b.key])
     .slice(0, limit);
+}
+
+function renderStaticCopy() {
+  const text = t();
+  document.documentElement.lang = text.htmlLang;
+  setText(".signin-link", text.nav.signIn);
+  setText(".hero-badge", text.heroBadge);
+  setHtml(".hero h1", text.heroTitle);
+  setText(".hero p", text.heroText);
+  setText(".primary-hero", text.heroButtons.start);
+  document.querySelectorAll(".ghost-hero")[0].textContent = text.heroButtons.signIn;
+  document.querySelectorAll(".ghost-hero")[1].textContent = text.heroButtons.example;
+  setText("#criteria-title", text.criteriaTitle);
+  setText(".section-heading p", text.criteriaText);
+  setText(".workspace-heading .eyebrow", text.workspaceEyebrow);
+  setText("#workspace-title", text.workspaceTitle);
+  setText(".topbar .eyebrow", text.coach.topEyebrow);
+  setText(".deal-card .eyebrow", text.deal.eyebrow);
+  setText("#resetDeal", text.deal.reset);
+  document.querySelectorAll(".deal-card label span")[0].textContent = text.deal.opportunity;
+  document.querySelectorAll(".deal-card label span")[1].textContent = text.deal.stage;
+  document.querySelectorAll(".deal-card label span")[2].textContent = text.deal.closeDate;
+  tabs.forEach((tab) => {
+    tab.textContent = text.tabs[tab.dataset.view];
+  });
+  document.querySelectorAll("[data-lang]").forEach((button) => {
+    const selected = button.dataset.lang === state.lang;
+    button.classList.toggle("active", selected);
+    button.setAttribute("aria-pressed", String(selected));
+  });
+  renderCriteria();
+  renderStageOptions();
+}
+
+function renderCriteria() {
+  document.querySelector(".criteria-row").innerHTML = elements()
+    .map(
+      (element) =>
+        `<div class="criterion"><span>${element.letter}</span><small>${escapeHtml(element.name)}</small></div>`
+    )
+    .join("");
+}
+
+function renderStageOptions() {
+  const stageSelect = document.querySelector("#dealStage");
+  stageSelect.innerHTML = Object.entries(t().stages)
+    .map(([value, label]) => `<option value="${value}">${escapeHtml(label)}</option>`)
+    .join("");
+  stageSelect.value = normalizeStage(state.dealStage);
 }
 
 function renderShell() {
@@ -193,33 +793,34 @@ function renderShell() {
   weakestElements().forEach((element) => {
     const item = document.createElement("article");
     item.className = "gap-item";
-    item.innerHTML = `<strong>${element.name}</strong><p>${element.guidance}</p>`;
+    item.innerHTML = `<strong>${escapeHtml(element.name)}</strong><p>${escapeHtml(element.guidance)}</p>`;
     gapList.append(item);
   });
 }
 
 function renderScorecard() {
+  const text = t();
   scoreGrid.innerHTML = "";
-  elements.forEach((element) => {
+  elements().forEach((element) => {
     const item = document.createElement("article");
     item.className = "score-item";
     item.innerHTML = `
       <div class="score-title">
         <span class="letter">${element.letter}</span>
         <div>
-          <strong>${element.name}</strong>
-          <p>${element.question}</p>
+          <strong>${escapeHtml(element.name)}</strong>
+          <p>${escapeHtml(element.question)}</p>
         </div>
       </div>
-      <div class="rating-row" role="group" aria-label="${element.name} score">
-        ${labels
+      <div class="rating-row" role="group" aria-label="${escapeHtml(`${element.name} ${text.scorecard.scoreLabel}`)}">
+        ${text.labels
           .map(
             (label, index) =>
-              `<button type="button" class="${state.scores[element.key] === index ? "active" : ""}" data-key="${element.key}" data-score="${index}">${label}</button>`
+              `<button type="button" class="${state.scores[element.key] === index ? "active" : ""}" data-key="${element.key}" data-score="${index}">${escapeHtml(label)}</button>`
           )
           .join("")}
       </div>
-      <textarea class="notes" data-note="${element.key}" placeholder="Evidence, buyer quotes, missing proof...">${escapeHtml(state.notes[element.key] || "")}</textarea>
+      <textarea class="notes" data-note="${element.key}" placeholder="${escapeHtml(text.scorecard.notesPlaceholder)}">${escapeHtml(state.notes[element.key] || "")}</textarea>
     `;
     scoreGrid.append(item);
   });
@@ -227,15 +828,15 @@ function renderScorecard() {
 
 function renderLibrary() {
   libraryGrid.innerHTML = "";
-  elements.forEach((element) => {
+  elements().forEach((element) => {
     const item = document.createElement("article");
     item.className = "library-item";
     item.innerHTML = `
       <div class="score-title">
         <span class="letter">${element.letter}</span>
         <div>
-          <strong>${element.name}</strong>
-          <p>${element.guidance}</p>
+          <strong>${escapeHtml(element.name)}</strong>
+          <p>${escapeHtml(element.guidance)}</p>
         </div>
       </div>
       <ul>${element.prompts.map((prompt) => `<li>${escapeHtml(prompt)}</li>`).join("")}</ul>
@@ -245,14 +846,16 @@ function renderLibrary() {
 }
 
 function makePlan() {
+  const text = t();
   return weakestElements(5).map((element, index) => {
     const score = state.scores[element.key];
     const priority = score === 0 ? "high" : score === 1 ? "medium" : "low";
     const ask = element.prompts[index % element.prompts.length];
     return {
       priority,
-      title: `${element.name}: ${labels[score]} evidence`,
-      body: `${ask} Capture the answer in the notes and confirm the next owner/date before advancing ${state.dealName}.`
+      priorityLabel: text.plan.priorities[priority],
+      title: `${element.name}: ${text.labels[score]} ${text.plan.evidence}`,
+      body: text.plan.body(ask, state.dealName)
     };
   });
 }
@@ -263,7 +866,7 @@ function renderPlan() {
     const item = document.createElement("article");
     item.className = "plan-item";
     item.innerHTML = `
-      <span class="priority ${plan.priority}">${escapeHtml(plan.priority)}</span>
+      <span class="priority ${plan.priority}">${escapeHtml(plan.priorityLabel)}</span>
       <div>
         <strong>${escapeHtml(plan.title)}</strong>
         <p>${escapeHtml(plan.body)}</p>
@@ -274,11 +877,14 @@ function renderPlan() {
 }
 
 function renderChat() {
+  const text = t();
+  if (state.chat.length === 0) state.chat = defaultChat();
   chatWindow.innerHTML = "";
   state.chat.forEach((message) => {
     const node = messageTemplate.content.firstElementChild.cloneNode(true);
     node.classList.toggle("user", message.role === "user");
-    node.querySelector(".message-avatar").textContent = message.role === "user" ? "You" : "AI";
+    node.querySelector(".message-avatar").textContent =
+      message.role === "user" ? text.coach.avatarUser : text.coach.avatarAi;
     node.querySelector(".message-body").innerHTML = message.text
       .split("\n")
       .map((line) => `<p>${escapeHtml(line)}</p>`)
@@ -288,56 +894,92 @@ function renderChat() {
   chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
+function renderPanelHeaders() {
+  const text = t();
+  pageTitle.textContent = text.tabs[document.querySelector(".nav-tab.active")?.dataset.view || "coach"];
+  setText("#coach-title", text.coach.title);
+  setText("#clearChat", text.coach.clear);
+  setText(".coach-panel .eyebrow", text.coach.eyebrow);
+  document.querySelector("#coachPrompt").placeholder = text.coach.placeholder;
+  document.querySelector("#coachForm .primary-button").textContent = text.coach.submit;
+  setText("#snapshot-title", text.coach.snapshotTitle);
+  setText(".insight-panel .eyebrow", text.coach.snapshotEyebrow);
+  document.querySelector(".quick-prompts").innerHTML = text.coach.prompts
+    .map(([label, prompt]) => `<button type="button" data-prompt="${escapeHtml(prompt)}">${escapeHtml(label)}</button>`)
+    .join("");
+  setText("#scorecard .eyebrow", text.scorecard.eyebrow);
+  setText("#scorecard h3", text.scorecard.title);
+  setText("#exportSummary", text.scorecard.export);
+  setText("#action-plan .eyebrow", text.plan.eyebrow);
+  setText("#action-plan h3", text.plan.title);
+  setText("#regeneratePlan", text.plan.regenerate);
+  setText("#library .eyebrow", text.library.eyebrow);
+  setText("#library h3", text.library.title);
+}
+
 function coachResponse(prompt) {
+  const text = t();
   const weakest = weakestElements(2);
   const percent = scorePercent();
   const next = weakest[0];
   const second = weakest[1];
   const lower = prompt.toLowerCase();
 
-  if (lower.includes("economic") || lower.includes("buyer")) {
-    return `Your next move is to earn direct Economic Buyer access, not just ask your champion to relay messages.\nAsk: "Who owns the business outcome and budget if this works?" Then ask your champion to help frame a meeting around ${state.dealName}'s quantified impact.\nDo not forecast this as controlled until the Economic Buyer confirms the pain, priority, and decision timing.`;
+  if (
+    lower.includes("economic") ||
+    lower.includes("buyer") ||
+    lower.includes("comprador") ||
+    lower.includes("econômico") ||
+    lower.includes("economico")
+  ) {
+    return text.response.economic(state.dealName);
   }
 
-  if (lower.includes("champion")) {
-    return `Test the champion with action, not enthusiasm.\nAsk them to map the decision team, explain the political risk, and introduce you to one stakeholder you have not met. If they cannot or will not do that, treat Champion as unproven.\nTie their personal win to the ${next.name} gap so they have a reason to sell internally.`;
+  if (lower.includes("champion") || lower.includes("campeão") || lower.includes("campeao")) {
+    return text.response.champion(next.name);
   }
 
-  if (lower.includes("risk") || lower.includes("diagnose")) {
-    return `The deal is ${healthText(percent).toLowerCase()} at ${percent}% qualified. The biggest exposed areas are ${next.name} and ${second.name}.\nYour manager will ask for proof, not confidence. Bring buyer-confirmed evidence for those two elements before you advance the stage.\nRecommended next step: schedule a mutual plan review and validate dates, owners, and exit criteria.`;
+  if (
+    lower.includes("risk") ||
+    lower.includes("diagnose") ||
+    lower.includes("risco") ||
+    lower.includes("riesgo") ||
+    lower.includes("diagnost")
+  ) {
+    return text.response.risk(healthText(percent), percent, next.name, second.name);
   }
 
-  return `For ${state.dealName}, focus on ${next.name} first. ${next.guidance}\nUse this call opener: "${next.prompts[0]}"\nExit the meeting with one confirmed fact, one named owner, and one dated next step. If the customer cannot provide those, keep the opportunity out of commit.`;
+  return text.response.default(state.dealName, next.name, next.guidance, next.prompts[0]);
 }
 
 function exportSummary() {
-  const rows = elements.map((element) => {
-    const note = state.notes[element.key] ? ` Notes: ${state.notes[element.key]}` : "";
-    return `${element.name}: ${labels[state.scores[element.key]]}.${note}`;
+  const text = t();
+  const rows = elements().map((element) => {
+    const note = state.notes[element.key] ? ` ${text.export.notes}: ${state.notes[element.key]}` : "";
+    return `${element.name}: ${text.labels[state.scores[element.key]]}.${note}`;
   });
   const summary = [
-    `Deal: ${state.dealName}`,
-    `Stage: ${state.dealStage}`,
-    `Close date: ${state.closeDate || "Not set"}`,
-    `Qualification health: ${scorePercent()}% (${healthText(scorePercent())})`,
+    `${text.export.deal}: ${state.dealName}`,
+    `${text.export.stage}: ${text.stages[state.dealStage]}`,
+    `${text.export.closeDate}: ${state.closeDate || text.export.notSet}`,
+    `${text.export.health}: ${scorePercent()}% (${healthText(scorePercent())})`,
     "",
     ...rows,
     "",
-    "Next actions:",
-    ...makePlan().map((plan) => `- [${plan.priority.toUpperCase()}] ${plan.title}: ${plan.body}`)
+    `${text.export.nextActions}:`,
+    ...makePlan().map((plan) => `- [${plan.priorityLabel.toUpperCase()}] ${plan.title}: ${plan.body}`)
   ].join("\n");
 
   navigator.clipboard.writeText(summary).then(() => {
-    state.chat.push({
-      role: "coach",
-      text: "Summary copied to clipboard. Use it for a deal review or manager 1:1."
-    });
+    state.chat.push({ role: "coach", text: text.export.copied });
     saveState();
     renderChat();
   });
 }
 
 function renderAll() {
+  renderStaticCopy();
+  renderPanelHeaders();
   renderShell();
   renderScorecard();
   renderLibrary();
@@ -345,43 +987,45 @@ function renderAll() {
   renderChat();
 }
 
+function activateView(viewId, title) {
+  tabs.forEach((item) => item.classList.remove("active"));
+  views.forEach((view) => view.classList.remove("active"));
+  const selectedTab = document.querySelector(`.nav-tab[data-view="${viewId}"]`);
+  const selectedView = document.querySelector(`#${viewId}`);
+  if (!selectedTab || !selectedView) return;
+  selectedTab.classList.add("active");
+  selectedView.classList.add("active");
+  pageTitle.textContent = title || t().tabs[viewId] || selectedTab.textContent.trim();
+}
+
 tabs.forEach((tab) => {
   tab.addEventListener("click", () => {
-    activateView(tab.dataset.view, tab.textContent.trim());
+    activateView(tab.dataset.view);
   });
 });
-
-function activateView(viewId, title) {
-    tabs.forEach((item) => item.classList.remove("active"));
-    views.forEach((view) => view.classList.remove("active"));
-    const selectedTab = document.querySelector(`.nav-tab[data-view="${viewId}"]`);
-    const selectedView = document.querySelector(`#${viewId}`);
-    if (!selectedTab || !selectedView) return;
-    selectedTab.classList.add("active");
-    selectedView.classList.add("active");
-    pageTitle.textContent = title || selectedTab.textContent.trim();
-}
 
 document.querySelectorAll("[data-jump]").forEach((button) => {
   button.addEventListener("click", () => {
     const viewId = button.dataset.jump;
-    const selectedTab = document.querySelector(`.nav-tab[data-view="${viewId}"]`);
-    activateView(viewId, selectedTab?.textContent.trim());
+    activateView(viewId);
     document.querySelector("#workspace").scrollIntoView({ behavior: "smooth", block: "start" });
   });
 });
 
 document.querySelectorAll("[data-lang]").forEach((button) => {
   button.addEventListener("click", () => {
-    document.querySelectorAll("[data-lang]").forEach((languageButton) => {
-      languageButton.classList.toggle("active", languageButton === button);
-      languageButton.setAttribute("aria-pressed", String(languageButton === button));
-    });
+    state.lang = button.dataset.lang;
+    state.chat = defaultChat();
+    if (state.dealName === copy.en.deal.defaultName || state.dealName === copy.pt.deal.defaultName || state.dealName === copy.es.deal.defaultName) {
+      state.dealName = t().deal.defaultName;
+    }
+    saveState();
+    renderAll();
   });
 });
 
 document.querySelector("#dealName").addEventListener("input", (event) => {
-  state.dealName = event.target.value || "Untitled deal";
+  state.dealName = event.target.value || t().deal.untitled;
   saveState();
 });
 
@@ -421,22 +1065,26 @@ document.querySelector("#coachForm").addEventListener("submit", (event) => {
   renderChat();
 });
 
-document.querySelectorAll("[data-prompt]").forEach((button) => {
-  button.addEventListener("click", () => {
-    document.querySelector("#coachPrompt").value = button.dataset.prompt;
-    document.querySelector("#coachForm").requestSubmit();
-  });
+document.querySelector(".quick-prompts").addEventListener("click", (event) => {
+  const button = event.target.closest("[data-prompt]");
+  if (!button) return;
+  document.querySelector("#coachPrompt").value = button.dataset.prompt;
+  document.querySelector("#coachForm").requestSubmit();
 });
 
 document.querySelector("#clearChat").addEventListener("click", () => {
-  state.chat = structuredClone(defaultState.chat);
+  state.chat = defaultChat();
   saveState();
   renderChat();
 });
 
 document.querySelector("#resetDeal").addEventListener("click", () => {
+  const lang = state.lang;
   state = structuredClone(defaultState);
-  localStorage.removeItem("meddpicc-coach-state");
+  state.lang = lang;
+  state.dealName = t().deal.defaultName;
+  state.chat = defaultChat();
+  localStorage.setItem("meddpicc-coach-state", JSON.stringify(state));
   renderAll();
 });
 
@@ -447,6 +1095,10 @@ if (!state.closeDate) {
   const date = new Date();
   date.setDate(date.getDate() + 30);
   state.closeDate = date.toISOString().slice(0, 10);
+}
+
+if (state.chat.length === 0) {
+  state.chat = defaultChat();
 }
 
 renderAll();
