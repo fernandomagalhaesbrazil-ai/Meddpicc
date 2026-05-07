@@ -16,21 +16,26 @@ const copy = {
     auth: {
       eyebrow: "Deal repository",
       title: "Sign in to save your deals",
-      body: "This static version stores your deal repository in this browser. Use a real email so the profile feels familiar; no password is required.",
+      body: "Sign in with email and password. If Firebase is configured, your deals sync to Firestore; otherwise they stay in this browser.",
       name: "Name",
       email: "Email",
+      password: "Password",
       namePlaceholder: "Your name",
       emailPlaceholder: "you@company.com",
-      submit: "Continue",
+      passwordPlaceholder: "At least 6 characters",
+      submit: "Sign in / create account",
       close: "Close",
-      signOut: "Sign out"
+      signOut: "Sign out",
+      firebaseReady: "Firebase sync enabled.",
+      localFallback: "Firebase config is blank. Using local browser storage.",
+      authError: "Could not sign in. Check the email and password."
     },
     repository: {
       title: "Deal repository",
       signedOut: "Sign in to save deals",
       signedOutNote: "Create a local profile to keep multiple MEDDPICC scorecards in this browser.",
       signedIn: (name, count) => `${name}'s deals (${count})`,
-      signedInNote: "Saved locally in this browser. Use Save after changing a deal.",
+      signedInNote: "Use Save after changing a deal. Firebase sync is used when configured.",
       savedDeals: "Saved deals",
       newDeal: "New Deal",
       saveDeal: "Save",
@@ -246,21 +251,26 @@ const copy = {
     auth: {
       eyebrow: "Repositório de negócios",
       title: "Entre para salvar seus negócios",
-      body: "Esta versão estática salva seu repositório de negócios neste navegador. Use um email real para reconhecer o perfil; não precisa de senha.",
+      body: "Entre com email e senha. Se o Firebase estiver configurado, seus negócios sincronizam com o Firestore; caso contrário ficam neste navegador.",
       name: "Nome",
       email: "Email",
+      password: "Senha",
       namePlaceholder: "Seu nome",
       emailPlaceholder: "voce@empresa.com",
-      submit: "Continuar",
+      passwordPlaceholder: "Pelo menos 6 caracteres",
+      submit: "Entrar / criar conta",
       close: "Fechar",
-      signOut: "Sair"
+      signOut: "Sair",
+      firebaseReady: "Sincronização Firebase ativada.",
+      localFallback: "A configuração do Firebase está vazia. Usando armazenamento local do navegador.",
+      authError: "Não foi possível entrar. Verifique email e senha."
     },
     repository: {
       title: "Repositório de negócios",
       signedOut: "Entre para salvar negócios",
       signedOutNote: "Crie um perfil local para manter vários scorecards MEDDPICC neste navegador.",
       signedIn: (name, count) => `Negócios de ${name} (${count})`,
-      signedInNote: "Salvo localmente neste navegador. Use Salvar depois de alterar um negócio.",
+      signedInNote: "Use Salvar depois de alterar um negócio. A sincronização Firebase será usada quando configurada.",
       savedDeals: "Negócios salvos",
       newDeal: "Novo negócio",
       saveDeal: "Salvar",
@@ -477,21 +487,26 @@ const copy = {
     auth: {
       eyebrow: "Repositorio de oportunidades",
       title: "Inicia sesión para guardar tus oportunidades",
-      body: "Esta versión estática guarda tu repositorio de oportunidades en este navegador. Usa un email real para reconocer el perfil; no requiere contraseña.",
+      body: "Inicia sesión con email y contraseña. Si Firebase está configurado, tus oportunidades se sincronizan con Firestore; si no, quedan en este navegador.",
       name: "Nombre",
       email: "Email",
+      password: "Contraseña",
       namePlaceholder: "Tu nombre",
       emailPlaceholder: "tu@empresa.com",
-      submit: "Continuar",
+      passwordPlaceholder: "Al menos 6 caracteres",
+      submit: "Iniciar / crear cuenta",
       close: "Cerrar",
-      signOut: "Cerrar sesión"
+      signOut: "Cerrar sesión",
+      firebaseReady: "Sincronización Firebase activada.",
+      localFallback: "La configuración de Firebase está vacía. Usando almacenamiento local del navegador.",
+      authError: "No se pudo iniciar sesión. Revisa email y contraseña."
     },
     repository: {
       title: "Repositorio de oportunidades",
       signedOut: "Inicia sesión para guardar oportunidades",
       signedOutNote: "Crea un perfil local para mantener varios scorecards MEDDPICC en este navegador.",
       signedIn: (name, count) => `Oportunidades de ${name} (${count})`,
-      signedInNote: "Guardado localmente en este navegador. Usa Guardar después de cambiar una oportunidad.",
+      signedInNote: "Usa Guardar después de cambiar una oportunidad. Firebase sync se usa cuando está configurado.",
       savedDeals: "Oportunidades guardadas",
       newDeal: "Nueva oportunidad",
       saveDeal: "Guardar",
@@ -740,6 +755,44 @@ const repositoryControls = document.querySelector("#repositoryControls");
 const repositoryStatus = document.querySelector("#repositoryStatus");
 const repositoryNote = document.querySelector("#repositoryNote");
 const dealRepository = document.querySelector("#dealRepository");
+const firebaseConfig = window.MEDDPICC_FIREBASE_CONFIG || {};
+const firebaseState = {
+  enabled: Boolean(firebaseConfig.apiKey && firebaseConfig.authDomain && firebaseConfig.projectId && firebaseConfig.appId),
+  loaded: false,
+  auth: null,
+  db: null,
+  user: null
+};
+
+async function loadFirebase() {
+  if (!firebaseState.enabled || firebaseState.loaded) return firebaseState.loaded;
+  await loadScript("https://www.gstatic.com/firebasejs/12.2.1/firebase-app-compat.js");
+  await loadScript("https://www.gstatic.com/firebasejs/12.2.1/firebase-auth-compat.js");
+  await loadScript("https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore-compat.js");
+  firebase.initializeApp(firebaseConfig);
+  firebaseState.auth = firebase.auth();
+  firebaseState.db = firebase.firestore();
+  firebaseState.loaded = true;
+  return true;
+}
+
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector(`script[src="${src}"]`)) {
+      resolve();
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = src;
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.append(script);
+  });
+}
+
+function firebaseDealCollection() {
+  return firebaseState.db.collection("users").doc(firebaseState.user.uid).collection("deals");
+}
 
 function t() {
   return copy[state.lang] || copy.en;
@@ -800,6 +853,49 @@ function syncCurrentDeal() {
   else state.deals.unshift(snapshot);
 }
 
+async function pullFirebaseDeals() {
+  if (!firebaseState.loaded || !firebaseState.user) return;
+  const snapshot = await firebaseDealCollection().orderBy("updatedAt", "desc").get();
+  state.deals = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  if (state.deals.length) {
+    const active = state.deals.find((deal) => deal.id === state.currentDealId) || state.deals[0];
+    applyDeal(active);
+  } else {
+    state.currentDealId = createId();
+    state.chat = defaultChat();
+    syncCurrentDeal();
+    await pushCurrentDealToFirebase();
+  }
+}
+
+async function pushCurrentDealToFirebase() {
+  if (!firebaseState.loaded || !firebaseState.user || !state.currentDealId) return;
+  const snapshot = currentDealSnapshot(state.currentDealId);
+  await firebaseDealCollection().doc(snapshot.id).set(snapshot);
+}
+
+async function deleteCurrentDealFromFirebase(dealId) {
+  if (!firebaseState.loaded || !firebaseState.user || !dealId) return;
+  await firebaseDealCollection().doc(dealId).delete();
+}
+
+async function signIntoFirebase(email, password, name) {
+  await loadFirebase();
+  try {
+    await firebaseState.auth.signInWithEmailAndPassword(email, password);
+  } catch (error) {
+    if (["auth/user-not-found", "auth/email-already-in-use"].includes(error.code)) {
+      await firebaseState.auth.createUserWithEmailAndPassword(email, password);
+    } else {
+      throw error;
+    }
+  }
+  firebaseState.user = firebaseState.auth.currentUser;
+  if (firebaseState.user && !firebaseState.user.displayName) {
+    await firebaseState.user.updateProfile({ displayName: name });
+  }
+}
+
 function loadState() {
   try {
     const stored = JSON.parse(localStorage.getItem("meddpicc-coach-state"));
@@ -821,6 +917,11 @@ function loadState() {
 function saveState() {
   syncCurrentDeal();
   localStorage.setItem("meddpicc-coach-state", JSON.stringify(state));
+}
+
+async function saveStateAndRemote() {
+  saveState();
+  await pushCurrentDealToFirebase();
 }
 
 function escapeHtml(value) {
@@ -864,6 +965,7 @@ function weakestElements(limit = 3) {
 
 function renderStaticCopy() {
   const text = t();
+  const isFirebaseSynced = state.user?.provider === "firebase";
   document.documentElement.lang = text.htmlLang;
   setText(".signin-link", state.user ? text.nav.signedIn(state.user.name) : text.nav.signIn);
   setText(".hero-badge", text.heroBadge);
@@ -881,7 +983,12 @@ function renderStaticCopy() {
   setText("#resetDeal", text.deal.reset);
   setText(".repository-card .eyebrow", text.repository.title);
   setText("#repositoryStatus", state.user ? text.repository.signedIn(state.user.name, state.deals.length) : text.repository.signedOut);
-  setText("#repositoryNote", state.user ? text.repository.signedInNote : text.repository.signedOutNote);
+  setText(
+    "#repositoryNote",
+    state.user
+      ? `${text.repository.signedInNote} ${isFirebaseSynced ? text.auth.firebaseReady : text.auth.localFallback}`
+      : text.repository.signedOutNote
+  );
   setText("#signOutButton", text.auth.signOut);
   setText("#newDealButton", text.repository.newDeal);
   setText("#saveDealButton", text.repository.saveDeal);
@@ -896,8 +1003,10 @@ function renderStaticCopy() {
   setText("#authSubmit", text.auth.submit);
   document.querySelectorAll(".auth-form label span")[0].textContent = text.auth.name;
   document.querySelectorAll(".auth-form label span")[1].textContent = text.auth.email;
+  document.querySelectorAll(".auth-form label span")[2].textContent = text.auth.password;
   document.querySelector("#authName").placeholder = text.auth.namePlaceholder;
   document.querySelector("#authEmail").placeholder = text.auth.emailPlaceholder;
+  document.querySelector("#authPassword").placeholder = text.auth.passwordPlaceholder;
   document.querySelectorAll(".deal-card label span")[0].textContent = text.deal.opportunity;
   document.querySelectorAll(".deal-card label span")[1].textContent = text.deal.stage;
   document.querySelectorAll(".deal-card label span")[2].textContent = text.deal.closeDate;
@@ -1140,7 +1249,7 @@ function exportSummary() {
 
   navigator.clipboard.writeText(summary).then(() => {
     state.chat.push({ role: "coach", text: text.export.copied });
-    saveState();
+    saveStateAndRemote();
     renderChat();
   });
 }
@@ -1170,6 +1279,8 @@ function openAuthModal() {
   authModal.hidden = false;
   document.querySelector("#authName").value = state.user?.name || "";
   document.querySelector("#authEmail").value = state.user?.email || "";
+  document.querySelector("#authPassword").value = "";
+  document.querySelector("#authError").hidden = true;
   document.querySelector("#authName").focus();
 }
 
@@ -1187,9 +1298,10 @@ function addRepositoryMessage(text) {
   state.chat.push({ role: "coach", text });
 }
 
-function createNewDeal() {
+async function createNewDeal() {
   const text = t();
   syncCurrentDeal();
+  await pushCurrentDealToFirebase();
   state.currentDealId = createId();
   state.dealName = text.repository.newDealName;
   state.dealStage = "discovery";
@@ -1199,23 +1311,24 @@ function createNewDeal() {
   state.chat = defaultChat();
   syncCurrentDeal();
   addRepositoryMessage(text.repository.createdMessage);
-  saveState();
+  await saveStateAndRemote();
   renderAll();
 }
 
-function saveRepositoryDeal() {
+async function saveRepositoryDeal() {
   if (!state.user) {
     openAuthModal();
     return;
   }
   addRepositoryMessage(t().repository.savedMessage);
-  saveState();
+  await saveStateAndRemote();
   renderAll();
 }
 
-function deleteRepositoryDeal() {
+async function deleteRepositoryDeal() {
   if (!state.user || !state.currentDealId) return;
   if (!window.confirm(t().repository.confirmDelete)) return;
+  const deletedDealId = state.currentDealId;
   state.deals = state.deals.filter((deal) => deal.id !== state.currentDealId);
   if (state.deals.length) {
     applyDeal(state.deals[0]);
@@ -1231,7 +1344,8 @@ function deleteRepositoryDeal() {
     syncCurrentDeal();
     addRepositoryMessage(t().repository.deletedMessage);
   }
-  saveState();
+  await deleteCurrentDealFromFirebase(deletedDealId);
+  await saveStateAndRemote();
   renderAll();
 }
 
@@ -1264,33 +1378,55 @@ authModal.addEventListener("click", (event) => {
   if (event.target === authModal) closeAuthModal();
 });
 
-authForm.addEventListener("submit", (event) => {
+authForm.addEventListener("submit", async (event) => {
   event.preventDefault();
-  state.user = {
-    name: document.querySelector("#authName").value.trim(),
-    email: document.querySelector("#authEmail").value.trim(),
-    signedInAt: new Date().toISOString()
-  };
-  ensureRepositoryDeal();
-  saveState();
-  closeAuthModal();
-  renderAll();
-  document.querySelector("#workspace").scrollIntoView({ behavior: "smooth", block: "start" });
+  const errorNode = document.querySelector("#authError");
+  const name = document.querySelector("#authName").value.trim();
+  const email = document.querySelector("#authEmail").value.trim();
+  const password = document.querySelector("#authPassword").value;
+  errorNode.hidden = true;
+  try {
+    if (firebaseState.enabled) {
+      await signIntoFirebase(email, password, name);
+      state.user = {
+        id: firebaseState.user.uid,
+        name: firebaseState.user.displayName || name,
+        email: firebaseState.user.email,
+        provider: "firebase",
+        signedInAt: new Date().toISOString()
+      };
+      await pullFirebaseDeals();
+    } else {
+      state.user = { name, email, provider: "local", signedInAt: new Date().toISOString() };
+      ensureRepositoryDeal();
+    }
+    await saveStateAndRemote();
+    closeAuthModal();
+    renderAll();
+    document.querySelector("#workspace").scrollIntoView({ behavior: "smooth", block: "start" });
+  } catch (error) {
+    errorNode.textContent = error.message || t().auth.authError;
+    errorNode.hidden = false;
+  }
 });
 
-document.querySelector("#signOutButton").addEventListener("click", () => {
+document.querySelector("#signOutButton").addEventListener("click", async () => {
   syncCurrentDeal();
+  await pushCurrentDealToFirebase();
+  if (firebaseState.auth) await firebaseState.auth.signOut();
+  firebaseState.user = null;
   state.user = null;
   saveState();
   renderAll();
 });
 
-dealRepository.addEventListener("change", (event) => {
+dealRepository.addEventListener("change", async (event) => {
   syncCurrentDeal();
+  await pushCurrentDealToFirebase();
   const deal = state.deals.find((item) => item.id === event.target.value);
   if (!deal) return;
   applyDeal(deal);
-  saveState();
+  await saveStateAndRemote();
   renderAll();
 });
 
@@ -1299,13 +1435,13 @@ document.querySelector("#saveDealButton").addEventListener("click", saveReposito
 document.querySelector("#deleteDealButton").addEventListener("click", deleteRepositoryDeal);
 
 document.querySelectorAll("[data-lang]").forEach((button) => {
-  button.addEventListener("click", () => {
+  button.addEventListener("click", async () => {
     state.lang = button.dataset.lang;
     state.chat = defaultChat();
     if (state.dealName === copy.en.deal.defaultName || state.dealName === copy.pt.deal.defaultName || state.dealName === copy.es.deal.defaultName) {
       state.dealName = t().deal.defaultName;
     }
-    saveState();
+    await saveStateAndRemote();
     renderAll();
   });
 });
@@ -1329,7 +1465,7 @@ scoreGrid.addEventListener("click", (event) => {
   const button = event.target.closest("[data-score]");
   if (!button) return;
   state.scores[button.dataset.key] = Number(button.dataset.score);
-  saveState();
+  saveStateAndRemote();
   renderAll();
 });
 
@@ -1347,7 +1483,7 @@ document.querySelector("#coachForm").addEventListener("submit", (event) => {
   state.chat.push({ role: "user", text: prompt });
   state.chat.push({ role: "coach", text: coachResponse(prompt) });
   input.value = "";
-  saveState();
+  saveStateAndRemote();
   renderChat();
 });
 
@@ -1358,13 +1494,13 @@ document.querySelector(".quick-prompts").addEventListener("click", (event) => {
   document.querySelector("#coachForm").requestSubmit();
 });
 
-document.querySelector("#clearChat").addEventListener("click", () => {
+document.querySelector("#clearChat").addEventListener("click", async () => {
   state.chat = defaultChat();
-  saveState();
+  await saveStateAndRemote();
   renderChat();
 });
 
-document.querySelector("#resetDeal").addEventListener("click", () => {
+document.querySelector("#resetDeal").addEventListener("click", async () => {
   const lang = state.lang;
   const user = state.user;
   const deals = state.deals;
@@ -1376,21 +1512,51 @@ document.querySelector("#resetDeal").addEventListener("click", () => {
   state.currentDealId = currentDealId;
   state.dealName = t().deal.defaultName;
   state.chat = defaultChat();
-  saveState();
+  await saveStateAndRemote();
   renderAll();
 });
 
 document.querySelector("#regeneratePlan").addEventListener("click", renderPlan);
 document.querySelector("#exportSummary").addEventListener("click", exportSummary);
 
-if (!state.closeDate) {
+async function initializeApp() {
   const date = new Date();
-  date.setDate(date.getDate() + 30);
-  state.closeDate = date.toISOString().slice(0, 10);
+  if (!state.closeDate) {
+    date.setDate(date.getDate() + 30);
+    state.closeDate = date.toISOString().slice(0, 10);
+  }
+
+  if (state.chat.length === 0) {
+    state.chat = defaultChat();
+  }
+
+  if (firebaseState.enabled) {
+    try {
+      await loadFirebase();
+      const firebaseUser = await new Promise((resolve) => {
+        const unsubscribe = firebaseState.auth.onAuthStateChanged((user) => {
+          unsubscribe();
+          resolve(user);
+        });
+      });
+      if (firebaseUser) {
+        firebaseState.user = firebaseUser;
+        state.user = {
+          id: firebaseUser.uid,
+          name: firebaseUser.displayName || firebaseUser.email,
+          email: firebaseUser.email,
+          provider: "firebase",
+          signedInAt: new Date().toISOString()
+        };
+        await pullFirebaseDeals();
+        saveState();
+      }
+    } catch (error) {
+      console.warn("Firebase initialization failed. Falling back to local storage.", error);
+    }
+  }
+
+  renderAll();
 }
 
-if (state.chat.length === 0) {
-  state.chat = defaultChat();
-}
-
-renderAll();
+initializeApp();

@@ -392,15 +392,22 @@ button {
 }
 
 .repository-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
   gap: 12px;
 }
 
 .repository-header strong {
   display: block;
   line-height: 1.25;
+}
+
+.repository-header .text-button {
+  max-width: 82px;
+  overflow-wrap: anywhere;
+  line-height: 1.15;
+  text-align: right;
 }
 
 .repository-note {
@@ -417,8 +424,12 @@ button {
 }
 
 .repository-actions {
-  grid-template-columns: 1fr 1fr auto;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
+}
+
+.repository-actions .danger {
+  justify-self: start;
 }
 
 .deal-card-header,
@@ -639,6 +650,17 @@ textarea:focus {
   display: grid;
   gap: 14px;
   margin-top: 18px;
+}
+
+.auth-error {
+  margin: 0;
+  padding: 10px 12px;
+  color: #991b1b;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 750;
 }
 
 .radial-wrap {

@@ -253,11 +253,17 @@
             <span>Email</span>
             <input id="authEmail" type="email" autocomplete="email" required />
           </label>
+          <label>
+            <span>Password</span>
+            <input id="authPassword" type="password" autocomplete="current-password" minlength="6" required />
+          </label>
+          <p class="auth-error" id="authError" role="alert" hidden></p>
           <button class="primary-button" id="authSubmit" type="submit">Continue</button>
         </form>
       </section>
     </div>
 
+    <script src="firebase-config.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
