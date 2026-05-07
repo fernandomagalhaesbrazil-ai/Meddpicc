@@ -371,6 +371,15 @@ document.querySelectorAll("[data-jump]").forEach((button) => {
   });
 });
 
+document.querySelectorAll("[data-lang]").forEach((button) => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll("[data-lang]").forEach((languageButton) => {
+      languageButton.classList.toggle("active", languageButton === button);
+      languageButton.setAttribute("aria-pressed", String(languageButton === button));
+    });
+  });
+});
+
 document.querySelector("#dealName").addEventListener("input", (event) => {
   state.dealName = event.target.value || "Untitled deal";
   saveState();
