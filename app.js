@@ -26,16 +26,16 @@ const copy = {
       submit: "Sign in / create account",
       close: "Close",
       signOut: "Sign out",
-      firebaseReady: "Firebase sync enabled.",
-      localFallback: "Firebase config is blank. Using local browser storage.",
+      firebaseReady: "Synced.",
+      localFallback: "Saved on this browser.",
       authError: "Could not sign in. Check the email and password."
     },
     repository: {
       title: "Deal repository",
       signedOut: "Sign in to save deals",
-      signedOutNote: "Create a local profile to keep multiple MEDDPICC scorecards in this browser.",
+      signedOutNote: "Sign in to save and switch deals.",
       signedIn: (name, count) => `${name}'s deals (${count})`,
-      signedInNote: "Use Save after changing a deal. Firebase sync is used when configured.",
+      signedInNote: "Saved deals sync when Firebase is active.",
       savedDeals: "Saved deals",
       newDeal: "New Deal",
       saveDeal: "Save",
@@ -49,7 +49,7 @@ const copy = {
     heroBadge: "⚡ Built for B2B Sales Teams",
     heroTitle: "Win More Deals with <span>MEDDPICC</span> Discipline",
     heroText:
-      "A structured deal coaching platform that gives reps a clear qualification scorecard and managers real-time pipeline visibility-so nothing slips through the cracks.",
+      "Score deals, spot gaps, and coach the next move in minutes.",
     heroButtons: {
       start: "Get Started Free ›",
       signIn: "Sign In",
@@ -57,9 +57,9 @@ const copy = {
     },
     criteriaTitle: "Every element, tracked & scored",
     criteriaText:
-      "Score each of the 8 MEDDPICC criteria with Red / Yellow / Green status so every rep knows exactly where their deal stands.",
+      "Score the 8 MEDDPICC criteria and see what needs work.",
     workspaceEyebrow: "Live workspace",
-    workspaceTitle: "Coach, score, and de-risk your active deal",
+    workspaceTitle: "Coach and score your active deal",
     tabs: {
       coach: "Coach",
       scorecard: "Scorecard",
@@ -96,7 +96,7 @@ const copy = {
       placeholder: "Ask: How do I test my champion before procurement?",
       submit: "Coach Me",
       defaultMessage:
-        "Bring me a real deal and I will pressure-test it. Start with the element that feels weakest, or ask for a next-call plan.",
+        "Pick a gap or ask for the next move.",
       avatarUser: "You",
       avatarAi: "AI",
       snapshotEyebrow: "Deal snapshot",
@@ -144,7 +144,7 @@ const copy = {
         name: "Metrics",
         question: "Can you quantify the business impact and value case?",
         guidance:
-          "Move from vague outcomes to numbers: revenue gained, cost removed, risk reduced, or time saved.",
+          "Quantify value in money, risk, or time.",
         prompts: [
           "What happens financially if the problem stays unsolved?",
           "Which metric will the buyer use to prove success?",
@@ -156,7 +156,7 @@ const copy = {
         name: "Economic Buyer",
         question: "Have you met the person who can release budget and say yes?",
         guidance:
-          "Do not let access be theoretical. Confirm authority, priorities, and the reason this matters now.",
+          "Confirm budget owner, priority, and timing.",
         prompts: [
           "Who owns the budget and what outcome are they measured on?",
           "What would make them personally sponsor this change?",
@@ -167,7 +167,7 @@ const copy = {
         letter: "D",
         name: "Decision Criteria",
         question: "Do you know and influence the standards used to choose?",
-        guidance: "Criteria that you do not shape can quietly become criteria built for a competitor.",
+        guidance: "Know and shape how they choose.",
         prompts: [
           "What are the must-have capabilities and why?",
           "Which requirements are weighted highest?",
@@ -178,7 +178,7 @@ const copy = {
         letter: "D",
         name: "Decision Process",
         question: "Can you map every step from evaluation to signature?",
-        guidance: "A real process has names, dates, meetings, approvals, and exit criteria.",
+        guidance: "Map owners, dates, approvals, and exits.",
         prompts: [
           "What happens after this meeting?",
           "Who else reviews the recommendation?",
@@ -190,7 +190,7 @@ const copy = {
         name: "Paper Process",
         question: "Have legal, procurement, security, and contract steps been surfaced?",
         guidance:
-          "Late-stage deals often slip after verbal yes. Bring paperwork into the sales motion early.",
+          "Surface legal, security, and procurement early.",
         prompts: [
           "Who owns procurement and legal review?",
           "Can we review redline expectations before selection?",
@@ -202,7 +202,7 @@ const copy = {
         name: "Identify Pain",
         question: "Is the pain specific, owned, urgent, and expensive?",
         guidance:
-          "Real pain has a business consequence and an executive who cares about that consequence.",
+          "Tie pain to urgency and business impact.",
         prompts: [
           "What is broken today and who feels it?",
           "Why is solving it urgent this quarter?",
@@ -214,7 +214,7 @@ const copy = {
         name: "Champion",
         question: "Do you have an internal seller with power and personal gain?",
         guidance:
-          "A champion sells when you are not in the room. Test them before you bet the forecast on them.",
+          "Test if they sell when you are absent.",
         prompts: [
           "What have they done that proves influence?",
           "What is their personal win?",
@@ -226,7 +226,7 @@ const copy = {
         name: "Competition",
         question: "Do you know every alternative, including no decision?",
         guidance:
-          "Compete against the full field: vendors, internal projects, budget delay, and the status quo.",
+          "Name every alternative, including no decision.",
         prompts: [
           "Who or what are we really competing against?",
           "Why would the customer choose to do nothing?",
@@ -242,7 +242,7 @@ const copy = {
       risk: (health, percent, nextName, secondName) =>
         `The deal is ${health.toLowerCase()} at ${percent}% qualified. The biggest exposed areas are ${nextName} and ${secondName}.\nYour manager will ask for proof, not confidence. Bring buyer-confirmed evidence for those two elements before you advance the stage.\nRecommended next step: schedule a mutual plan review and validate dates, owners, and exit criteria.`,
       default: (dealName, nextName, guidance, prompt) =>
-        `For ${dealName}, focus on ${nextName} first. ${guidance}\nUse this call opener: "${prompt}"\nExit the meeting with one confirmed fact, one named owner, and one dated next step. If the customer cannot provide those, keep the opportunity out of commit.`
+        `Focus on ${nextName}. ${guidance}\nAsk: "${prompt}"\nLeave with one owner and one dated next step.`
     }
   },
   pt: {
@@ -261,16 +261,16 @@ const copy = {
       submit: "Entrar / criar conta",
       close: "Fechar",
       signOut: "Sair",
-      firebaseReady: "Sincronização Firebase ativada.",
-      localFallback: "A configuração do Firebase está vazia. Usando armazenamento local do navegador.",
+      firebaseReady: "Sincronizado.",
+      localFallback: "Salvo neste navegador.",
       authError: "Não foi possível entrar. Verifique email e senha."
     },
     repository: {
       title: "Repositório de negócios",
       signedOut: "Entre para salvar negócios",
-      signedOutNote: "Crie um perfil local para manter vários scorecards MEDDPICC neste navegador.",
+      signedOutNote: "Entre para salvar e alternar negócios.",
       signedIn: (name, count) => `Negócios de ${name} (${count})`,
-      signedInNote: "Use Salvar depois de alterar um negócio. A sincronização Firebase será usada quando configurada.",
+      signedInNote: "Negócios salvos sincronizam com Firebase ativo.",
       savedDeals: "Negócios salvos",
       newDeal: "Novo negócio",
       saveDeal: "Salvar",
@@ -284,7 +284,7 @@ const copy = {
     heroBadge: "⚡ Criado para equipes de vendas B2B",
     heroTitle: "Ganhe Mais Negócios com Disciplina <span>MEDDPICC</span>",
     heroText:
-      "Uma plataforma estruturada de coaching de negócios que dá aos reps um scorecard claro de qualificação e aos gestores visibilidade em tempo real do pipeline-para que nada passe despercebido.",
+      "Pontue negócios, veja lacunas e defina o próximo passo em minutos.",
     heroButtons: {
       start: "Começar grátis ›",
       signIn: "Entrar",
@@ -292,9 +292,9 @@ const copy = {
     },
     criteriaTitle: "Cada elemento, acompanhado e pontuado",
     criteriaText:
-      "Pontue os 8 critérios MEDDPICC com status vermelho / amarelo / verde para que cada rep saiba exatamente onde o negócio está.",
+      "Pontue os 8 critérios MEDDPICC e veja o que precisa melhorar.",
     workspaceEyebrow: "Área de trabalho",
-    workspaceTitle: "Faça coaching, pontue e reduza o risco do seu negócio ativo",
+    workspaceTitle: "Faça coaching e pontue seu negócio",
     tabs: {
       coach: "Coach",
       scorecard: "Scorecard",
@@ -331,7 +331,7 @@ const copy = {
       placeholder: "Pergunte: Como testo meu champion antes de compras?",
       submit: "Me orientar",
       defaultMessage:
-        "Traga um negócio real e eu vou testá-lo com rigor. Comece pelo elemento que parece mais fraco ou peça um plano para a próxima call.",
+        "Escolha uma lacuna ou peça o próximo passo.",
       avatarUser: "Você",
       avatarAi: "IA",
       snapshotEyebrow: "Resumo do negócio",
@@ -379,7 +379,7 @@ const copy = {
         name: "Métricas",
         question: "Você consegue quantificar o impacto de negócio e o caso de valor?",
         guidance:
-          "Saia de resultados vagos para números: receita gerada, custo removido, risco reduzido ou tempo economizado.",
+          "Quantifique valor em dinheiro, risco ou tempo.",
         prompts: [
           "O que acontece financeiramente se o problema continuar?",
           "Qual métrica o comprador usará para provar sucesso?",
@@ -391,7 +391,7 @@ const copy = {
         name: "Comprador Econômico",
         question: "Você já falou com a pessoa que libera orçamento e pode dizer sim?",
         guidance:
-          "Não deixe o acesso no campo teórico. Confirme autoridade, prioridades e por que isso importa agora.",
+          "Confirme dono do orçamento, prioridade e timing.",
         prompts: [
           "Quem controla o orçamento e qual resultado essa pessoa precisa entregar?",
           "O que faria essa pessoa patrocinar a mudança?",
@@ -403,7 +403,7 @@ const copy = {
         name: "Critérios de Decisão",
         question: "Você conhece e influencia os critérios usados para escolher?",
         guidance:
-          "Critérios que você não molda podem virar critérios desenhados para um concorrente.",
+          "Conheça e influencie como eles escolhem.",
         prompts: [
           "Quais capacidades são obrigatórias e por quê?",
           "Quais requisitos têm maior peso?",
@@ -414,7 +414,7 @@ const copy = {
         letter: "D",
         name: "Processo de Decisão",
         question: "Você mapeia cada etapa da avaliação até a assinatura?",
-        guidance: "Um processo real tem nomes, datas, reuniões, aprovações e critérios de saída.",
+        guidance: "Mapeie donos, datas, aprovações e saídas.",
         prompts: [
           "O que acontece depois desta reunião?",
           "Quem mais revisa a recomendação?",
@@ -426,7 +426,7 @@ const copy = {
         name: "Processo de Papel",
         question: "Jurídico, compras, segurança e contrato já apareceram no plano?",
         guidance:
-          "Negócios avançados escorregam depois do sim verbal. Traga a papelada cedo para o processo comercial.",
+          "Antecipe jurídico, segurança e compras.",
         prompts: [
           "Quem cuida de compras e revisão jurídica?",
           "Podemos revisar expectativas de redline antes da escolha?",
@@ -438,7 +438,7 @@ const copy = {
         name: "Identificar Dor",
         question: "A dor é específica, tem dono, é urgente e cara?",
         guidance:
-          "Dor real tem consequência de negócio e um executivo que se importa com essa consequência.",
+          "Ligue dor a urgência e impacto.",
         prompts: [
           "O que está quebrado hoje e quem sente isso?",
           "Por que resolver isso é urgente neste trimestre?",
@@ -450,7 +450,7 @@ const copy = {
         name: "Champion",
         question: "Você tem um vendedor interno com poder e ganho pessoal?",
         guidance:
-          "Um champion vende quando você não está na sala. Teste antes de apostar o forecast nele.",
+          "Teste se ele vende sem você na sala.",
         prompts: [
           "O que essa pessoa fez que prova influência?",
           "Qual é o ganho pessoal dela?",
@@ -462,7 +462,7 @@ const copy = {
         name: "Concorrência",
         question: "Você conhece todas as alternativas, inclusive não decidir?",
         guidance:
-          "Compita contra todo o campo: fornecedores, projetos internos, atraso de orçamento e status quo.",
+          "Nomeie toda alternativa, inclusive não decidir.",
         prompts: [
           "Contra quem ou contra o quê estamos realmente competindo?",
           "Por que o cliente escolheria não fazer nada?",
@@ -478,7 +478,7 @@ const copy = {
       risk: (health, percent, nextName, secondName) =>
         `O negócio está ${health.toLowerCase()} com ${percent}% de qualificação. As maiores áreas expostas são ${nextName} e ${secondName}.\nSeu gestor vai pedir prova, não confiança. Traga evidências confirmadas pelo comprador para esses dois elementos antes de avançar a etapa.\nPróximo passo recomendado: marque uma revisão de plano mútuo e valide datas, responsáveis e critérios de saída.`,
       default: (dealName, nextName, guidance, prompt) =>
-        `Para ${dealName}, foque primeiro em ${nextName}. ${guidance}\nUse esta abertura na call: "${prompt}"\nSaia da reunião com um fato confirmado, um responsável nomeado e um próximo passo com data. Se o cliente não conseguir fornecer isso, mantenha a oportunidade fora de commit.`
+        `Foque em ${nextName}. ${guidance}\nPergunte: "${prompt}"\nSaia com um dono e uma próxima etapa datada.`
     }
   },
   es: {
@@ -497,16 +497,16 @@ const copy = {
       submit: "Iniciar / crear cuenta",
       close: "Cerrar",
       signOut: "Cerrar sesión",
-      firebaseReady: "Sincronización Firebase activada.",
-      localFallback: "La configuración de Firebase está vacía. Usando almacenamiento local del navegador.",
+      firebaseReady: "Sincronizado.",
+      localFallback: "Guardado en este navegador.",
       authError: "No se pudo iniciar sesión. Revisa email y contraseña."
     },
     repository: {
       title: "Repositorio de oportunidades",
       signedOut: "Inicia sesión para guardar oportunidades",
-      signedOutNote: "Crea un perfil local para mantener varios scorecards MEDDPICC en este navegador.",
+      signedOutNote: "Inicia sesión para guardar y cambiar oportunidades.",
       signedIn: (name, count) => `Oportunidades de ${name} (${count})`,
-      signedInNote: "Usa Guardar después de cambiar una oportunidad. Firebase sync se usa cuando está configurado.",
+      signedInNote: "Las oportunidades guardadas sincronizan con Firebase activo.",
       savedDeals: "Oportunidades guardadas",
       newDeal: "Nueva oportunidad",
       saveDeal: "Guardar",
@@ -520,7 +520,7 @@ const copy = {
     heroBadge: "⚡ Creado para equipos de ventas B2B",
     heroTitle: "Gana Más Negocios con Disciplina <span>MEDDPICC</span>",
     heroText:
-      "Una plataforma estructurada de coaching de oportunidades que da a los reps un scorecard claro de calificación y a los managers visibilidad del pipeline en tiempo real-para que nada se escape.",
+      "Puntúa oportunidades, detecta brechas y define el próximo paso en minutos.",
     heroButtons: {
       start: "Comenzar gratis ›",
       signIn: "Iniciar sesión",
@@ -528,9 +528,9 @@ const copy = {
     },
     criteriaTitle: "Cada elemento, seguido y puntuado",
     criteriaText:
-      "Puntúa los 8 criterios MEDDPICC con estado rojo / amarillo / verde para que cada rep sepa exactamente dónde está su oportunidad.",
+      "Puntúa los 8 criterios MEDDPICC y ve qué falta mejorar.",
     workspaceEyebrow: "Espacio de trabajo",
-    workspaceTitle: "Haz coaching, puntúa y reduce el riesgo de tu oportunidad activa",
+    workspaceTitle: "Haz coaching y puntúa tu oportunidad",
     tabs: {
       coach: "Coach",
       scorecard: "Scorecard",
@@ -567,7 +567,7 @@ const copy = {
       placeholder: "Pregunta: ¿Cómo pruebo a mi champion antes de compras?",
       submit: "Coachéame",
       defaultMessage:
-        "Trae una oportunidad real y la pondré a prueba. Empieza por el elemento que se siente más débil o pide un plan para la próxima llamada.",
+        "Elige una brecha o pide el próximo paso.",
       avatarUser: "Tú",
       avatarAi: "IA",
       snapshotEyebrow: "Resumen de la oportunidad",
@@ -616,7 +616,7 @@ const copy = {
         name: "Métricas",
         question: "¿Puedes cuantificar el impacto de negocio y el caso de valor?",
         guidance:
-          "Pasa de resultados vagos a números: ingresos ganados, costos eliminados, riesgo reducido o tiempo ahorrado.",
+          "Cuantifica valor en dinero, riesgo o tiempo.",
         prompts: [
           "¿Qué pasa financieramente si el problema no se resuelve?",
           "¿Qué métrica usará el comprador para probar el éxito?",
@@ -628,7 +628,7 @@ const copy = {
         name: "Comprador Económico",
         question: "¿Has hablado con la persona que puede liberar presupuesto y decir que sí?",
         guidance:
-          "No dejes el acceso en teoría. Confirma autoridad, prioridades y por qué esto importa ahora.",
+          "Confirma dueño del presupuesto, prioridad y timing.",
         prompts: [
           "¿Quién controla el presupuesto y qué resultado debe entregar?",
           "¿Qué haría que patrocine personalmente este cambio?",
@@ -640,7 +640,7 @@ const copy = {
         name: "Criterios de Decisión",
         question: "¿Conoces e influyes los criterios usados para elegir?",
         guidance:
-          "Los criterios que no moldeas pueden convertirse en criterios hechos para un competidor.",
+          "Conoce e influye cómo eligen.",
         prompts: [
           "¿Qué capacidades son imprescindibles y por qué?",
           "¿Qué requisitos pesan más?",
@@ -651,7 +651,7 @@ const copy = {
         letter: "D",
         name: "Proceso de Decisión",
         question: "¿Puedes mapear cada paso desde la evaluación hasta la firma?",
-        guidance: "Un proceso real tiene nombres, fechas, reuniones, aprobaciones y criterios de salida.",
+        guidance: "Mapea dueños, fechas, aprobaciones y salidas.",
         prompts: [
           "¿Qué ocurre después de esta reunión?",
           "¿Quién más revisa la recomendación?",
@@ -663,7 +663,7 @@ const copy = {
         name: "Proceso de Papel",
         question: "¿Legal, compras, seguridad y contrato ya están incluidos?",
         guidance:
-          "Las oportunidades avanzadas suelen moverse después del sí verbal. Incorpora la documentación temprano.",
+          "Anticipa legal, seguridad y compras.",
         prompts: [
           "¿Quién lidera compras y revisión legal?",
           "¿Podemos revisar expectativas de redlines antes de la selección?",
@@ -675,7 +675,7 @@ const copy = {
         name: "Identificar Dolor",
         question: "¿El dolor es específico, tiene dueño, es urgente y caro?",
         guidance:
-          "El dolor real tiene una consecuencia de negocio y un ejecutivo que se preocupa por esa consecuencia.",
+          "Conecta dolor con urgencia e impacto.",
         prompts: [
           "¿Qué está roto hoy y quién lo siente?",
           "¿Por qué resolverlo es urgente este trimestre?",
@@ -687,7 +687,7 @@ const copy = {
         name: "Champion",
         question: "¿Tienes un vendedor interno con poder y ganancia personal?",
         guidance:
-          "Un champion vende cuando no estás en la sala. Pruébalo antes de apostar el forecast.",
+          "Prueba si vende cuando no estás.",
         prompts: [
           "¿Qué ha hecho que pruebe influencia?",
           "¿Cuál es su ganancia personal?",
@@ -699,7 +699,7 @@ const copy = {
         name: "Competencia",
         question: "¿Conoces todas las alternativas, incluida no decidir?",
         guidance:
-          "Compite contra todo el campo: proveedores, proyectos internos, retraso de presupuesto y status quo.",
+          "Nombra toda alternativa, incluso no decidir.",
         prompts: [
           "¿Contra quién o contra qué competimos realmente?",
           "¿Por qué el cliente elegiría no hacer nada?",
@@ -715,7 +715,7 @@ const copy = {
       risk: (health, percent, nextName, secondName) =>
         `La oportunidad está ${health.toLowerCase()} con ${percent}% de calificación. Las áreas más expuestas son ${nextName} y ${secondName}.\nTu manager pedirá prueba, no confianza. Trae evidencia confirmada por el comprador para esos dos elementos antes de avanzar de etapa.\nPróximo paso recomendado: agenda una revisión del plan mutuo y valida fechas, responsables y criterios de salida.`,
       default: (dealName, nextName, guidance, prompt) =>
-        `Para ${dealName}, enfócate primero en ${nextName}. ${guidance}\nUsa esta apertura en la llamada: "${prompt}"\nSal de la reunión con un hecho confirmado, un responsable nombrado y un próximo paso con fecha. Si el cliente no puede dar eso, mantén la oportunidad fuera de commit.`
+        `Enfócate en ${nextName}. ${guidance}\nPregunta: "${prompt}"\nSal con un dueño y un próximo paso fechado.`
     }
   }
 };

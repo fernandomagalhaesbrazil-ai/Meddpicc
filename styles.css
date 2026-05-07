@@ -135,8 +135,8 @@ button {
 .hero {
   display: grid;
   place-items: center;
-  min-height: 540px;
-  padding: 90px 20px 86px;
+  min-height: 470px;
+  padding: 72px 20px 70px;
   color: white;
   background:
     radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.16) 1px, transparent 0) 0 0 / 36px 36px,
@@ -152,7 +152,7 @@ button {
   display: inline-flex;
   align-items: center;
   min-height: 30px;
-  margin-bottom: 28px;
+  margin-bottom: 22px;
   padding: 0 16px;
   color: white;
   background: rgba(255, 255, 255, 0.12);
@@ -164,8 +164,8 @@ button {
 
 .hero h1 {
   margin: 0;
-  font-size: clamp(43px, 7vw, 72px);
-  line-height: 0.98;
+  font-size: clamp(40px, 6vw, 64px);
+  line-height: 1;
   letter-spacing: 0;
 }
 
@@ -174,10 +174,10 @@ button {
 }
 
 .hero p {
-  width: min(690px, 100%);
-  margin: 28px auto 0;
+  width: min(590px, 100%);
+  margin: 22px auto 0;
   color: rgba(255, 255, 255, 0.86);
-  font-size: clamp(18px, 2vw, 23px);
+  font-size: clamp(17px, 1.7vw, 20px);
   font-weight: 650;
   line-height: 1.42;
 }
@@ -187,7 +187,7 @@ button {
   flex-wrap: wrap;
   justify-content: center;
   gap: 12px;
-  margin-top: 34px;
+  margin-top: 28px;
 }
 
 .primary-hero,
@@ -211,7 +211,7 @@ button {
 }
 
 .criteria-strip {
-  padding: 64px 20px 66px;
+  padding: 48px 20px 50px;
   background: #f8f9fb;
 }
 
@@ -235,11 +235,11 @@ button {
 }
 
 .section-heading p {
-  margin: 22px 0 0;
+  margin: 14px 0 0;
   color: var(--muted);
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 650;
-  line-height: 1.45;
+  line-height: 1.35;
 }
 
 .criteria-row {
@@ -278,7 +278,7 @@ button {
 }
 
 .workspace-section {
-  padding: 54px 28px 70px;
+  padding: 42px 28px 58px;
   background:
     linear-gradient(180deg, #ffffff 0, #f5f7fb 100%);
 }
@@ -294,8 +294,8 @@ button {
 
 .workspace-heading h2 {
   max-width: 760px;
-  font-size: clamp(30px, 4vw, 48px);
-  line-height: 1.04;
+  font-size: clamp(28px, 3.4vw, 42px);
+  line-height: 1.08;
 }
 
 .eyebrow {
@@ -330,7 +330,7 @@ button {
 
 .app-shell {
   display: grid;
-  grid-template-columns: 270px minmax(0, 1fr);
+  grid-template-columns: 252px minmax(0, 1fr);
   gap: 18px;
   width: min(1220px, 100%);
   margin: 0 auto;
@@ -381,14 +381,14 @@ button {
 
 .deal-card {
   display: grid;
-  gap: 14px;
-  padding: 16px;
+  gap: 12px;
+  padding: 14px;
 }
 
 .repository-card {
   display: grid;
-  gap: 13px;
-  padding: 16px;
+  gap: 10px;
+  padding: 14px;
 }
 
 .repository-header {
@@ -413,8 +413,8 @@ button {
 .repository-note {
   margin: 0;
   color: var(--muted);
-  font-size: 13px;
-  line-height: 1.45;
+  font-size: 12px;
+  line-height: 1.35;
 }
 
 .repository-controls,
@@ -424,7 +424,7 @@ button {
 }
 
 .repository-actions {
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   align-items: center;
 }
 
@@ -485,7 +485,7 @@ textarea:focus {
 
 .topbar {
   margin-bottom: 14px;
-  padding: 18px 20px;
+  padding: 15px 18px;
   background: white;
   border: 1px solid var(--line);
   border-radius: 14px;
@@ -493,7 +493,7 @@ textarea:focus {
 }
 
 .topbar h2 {
-  font-size: 30px;
+  font-size: 26px;
   line-height: 1.05;
 }
 
@@ -512,13 +512,13 @@ textarea:focus {
 }
 
 .panel {
-  padding: 20px;
+  padding: 18px;
 }
 
 .coach-panel {
   display: grid;
-  grid-template-rows: auto minmax(360px, 1fr) auto;
-  min-height: 610px;
+  grid-template-rows: auto minmax(300px, 1fr) auto;
+  min-height: 520px;
 }
 
 .chat-window {
@@ -547,11 +547,11 @@ textarea:focus {
 }
 
 .message-body {
-  padding: 13px 14px;
+  padding: 12px 13px;
   background: #f6f7fb;
   border: 1px solid var(--line);
   border-radius: 12px;
-  line-height: 1.55;
+  line-height: 1.35;
 }
 
 .message.user .message-body {
@@ -617,7 +617,7 @@ textarea:focus {
   inset: 0;
   display: grid;
   place-items: center;
-  padding: 20px;
+  padding: 18px;
   background: rgba(17, 24, 39, 0.48);
 }
 
@@ -702,7 +702,7 @@ textarea:focus {
 .plan-item,
 .library-item,
 .score-item {
-  padding: 15px;
+  padding: 13px;
   background: #fbfcff;
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -722,7 +722,7 @@ textarea:focus {
 .score-item p {
   margin: 0;
   color: var(--muted);
-  line-height: 1.45;
+  line-height: 1.35;
 }
 
 .quick-prompts {
@@ -755,6 +755,11 @@ textarea:focus {
   display: flex;
   gap: 10px;
   align-items: start;
+}
+
+.gap-item p,
+.score-item .score-title p {
+  display: none;
 }
 
 .letter {
@@ -826,7 +831,7 @@ textarea:focus {
   margin: 12px 0 0;
   padding-left: 18px;
   color: var(--ink);
-  line-height: 1.55;
+  line-height: 1.35;
 }
 
 @media (max-width: 1100px) {
