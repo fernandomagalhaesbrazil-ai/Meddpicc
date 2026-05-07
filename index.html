@@ -3,155 +3,203 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MEDDPICC Deal Coach</title>
+    <title>MEDDPICC Coach</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="app-shell">
-      <aside class="sidebar" aria-label="Deal navigation">
-        <div class="brand">
-          <div class="brand-mark">M</div>
-          <div>
-            <p class="eyebrow">Deal qualification</p>
-            <h1>MEDDPICC Coach</h1>
+    <header class="site-nav" aria-label="Site navigation">
+      <a class="brand" href="#top" aria-label="MEDDPICC Coach home">
+        <span class="brand-mark">M</span>
+        <span>MEDDPICC Coach</span>
+      </a>
+      <div class="nav-actions">
+        <div class="language-switch" aria-label="Language selector">
+          <span class="globe">○</span>
+          <button class="active" type="button">EN</button>
+          <button type="button">PT</button>
+          <button type="button">ES</button>
+        </div>
+        <button class="signin-link" data-jump="coach" type="button">Sign In</button>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-inner">
+          <div class="hero-badge">⚡ Built for B2B Sales Teams</div>
+          <h1>Win More Deals with <span>MEDDPICC</span> Discipline</h1>
+          <p>
+            A structured deal coaching platform that gives reps a clear qualification
+            scorecard and managers real-time pipeline visibility&mdash;so nothing slips
+            through the cracks.
+          </p>
+          <div class="hero-actions">
+            <button class="primary-hero" data-jump="coach" type="button">Get Started Free ›</button>
+            <button class="ghost-hero" data-jump="coach" type="button">Sign In</button>
+            <button class="ghost-hero" data-jump="scorecard" type="button">See a Live Example</button>
           </div>
         </div>
+      </section>
 
-        <nav class="nav-tabs" aria-label="Primary">
-          <button class="nav-tab active" data-view="coach" type="button">
-            <span>Coach</span>
-          </button>
-          <button class="nav-tab" data-view="scorecard" type="button">
-            <span>Scorecard</span>
-          </button>
-          <button class="nav-tab" data-view="action-plan" type="button">
-            <span>Action Plan</span>
-          </button>
-          <button class="nav-tab" data-view="library" type="button">
-            <span>Playbook</span>
-          </button>
-        </nav>
+      <section class="criteria-strip" aria-labelledby="criteria-title">
+        <div class="section-heading">
+          <h2 id="criteria-title">Every element, tracked &amp; scored</h2>
+          <p>
+            Score each of the 8 MEDDPICC criteria with Red / Yellow / Green status so
+            every rep knows exactly where their deal stands.
+          </p>
+        </div>
+        <div class="criteria-row">
+          <div class="criterion"><span>M</span><small>Metrics</small></div>
+          <div class="criterion"><span>E</span><small>Economic Buyer</small></div>
+          <div class="criterion"><span>D</span><small>Decision Criteria</small></div>
+          <div class="criterion"><span>D</span><small>Decision Process</small></div>
+          <div class="criterion"><span>P</span><small>Paper Process</small></div>
+          <div class="criterion"><span>I</span><small>Identify Pain</small></div>
+          <div class="criterion"><span>C</span><small>Champion</small></div>
+          <div class="criterion"><span>C</span><small>Competition</small></div>
+        </div>
+      </section>
 
-        <section class="deal-card" aria-labelledby="deal-title">
-          <div class="deal-card-header">
-            <p class="eyebrow">Current deal</p>
-            <button class="text-button" id="resetDeal" type="button">Reset</button>
-          </div>
-          <label>
-            <span>Opportunity</span>
-            <input id="dealName" type="text" value="Acme expansion" />
-          </label>
-          <label>
-            <span>Stage</span>
-            <select id="dealStage">
-              <option>Discovery</option>
-              <option>Validation</option>
-              <option selected>Proposal</option>
-              <option>Procurement</option>
-              <option>Commit</option>
-            </select>
-          </label>
-          <label>
-            <span>Close date</span>
-            <input id="closeDate" type="date" />
-          </label>
-        </section>
-      </aside>
-
-      <main>
-        <header class="topbar">
+      <section class="workspace-section" id="workspace" aria-labelledby="workspace-title">
+        <div class="workspace-heading">
           <div>
-            <p class="eyebrow">24/7 deal review</p>
-            <h2 id="pageTitle">Coach</h2>
+            <p class="eyebrow">Live workspace</p>
+            <h2 id="workspace-title">Coach, score, and de-risk your active deal</h2>
           </div>
           <div class="health-pill" aria-live="polite">
             <span id="healthScore">0%</span>
             <small id="healthLabel">Unqualified</small>
           </div>
-        </header>
+        </div>
 
-        <section class="view active" id="coach">
-          <div class="coach-layout">
-            <section class="panel coach-panel" aria-labelledby="coach-title">
-              <div class="panel-header">
-                <div>
-                  <p class="eyebrow">AI-style coaching</p>
-                  <h3 id="coach-title">Ask about your next move</h3>
-                </div>
-                <button class="secondary-button" id="clearChat" type="button">Clear</button>
+        <div class="app-shell">
+          <aside class="sidebar" aria-label="Deal navigation">
+            <nav class="nav-tabs" aria-label="Primary app views">
+              <button class="nav-tab active" data-view="coach" type="button">Coach</button>
+              <button class="nav-tab" data-view="scorecard" type="button">Scorecard</button>
+              <button class="nav-tab" data-view="action-plan" type="button">Action Plan</button>
+              <button class="nav-tab" data-view="library" type="button">Playbook</button>
+            </nav>
+
+            <section class="deal-card" aria-label="Current deal">
+              <div class="deal-card-header">
+                <p class="eyebrow">Current deal</p>
+                <button class="text-button" id="resetDeal" type="button">Reset</button>
               </div>
-              <div class="chat-window" id="chatWindow" aria-live="polite"></div>
-              <form class="chat-input" id="coachForm">
-                <textarea
-                  id="coachPrompt"
-                  rows="3"
-                  placeholder="Ask: How do I test my champion before procurement?"
-                ></textarea>
-                <button class="primary-button" type="submit">Coach Me</button>
-              </form>
+              <label>
+                <span>Opportunity</span>
+                <input id="dealName" type="text" value="Acme expansion" />
+              </label>
+              <label>
+                <span>Stage</span>
+                <select id="dealStage">
+                  <option>Discovery</option>
+                  <option>Validation</option>
+                  <option selected>Proposal</option>
+                  <option>Procurement</option>
+                  <option>Commit</option>
+                </select>
+              </label>
+              <label>
+                <span>Close date</span>
+                <input id="closeDate" type="date" />
+              </label>
+            </section>
+          </aside>
+
+          <div class="app-main">
+            <header class="topbar">
+              <div>
+                <p class="eyebrow">24/7 deal review</p>
+                <h2 id="pageTitle">Coach</h2>
+              </div>
+            </header>
+
+            <section class="view active" id="coach">
+              <div class="coach-layout">
+                <section class="panel coach-panel" aria-labelledby="coach-title">
+                  <div class="panel-header">
+                    <div>
+                      <p class="eyebrow">AI-style coaching</p>
+                      <h3 id="coach-title">Ask about your next move</h3>
+                    </div>
+                    <button class="secondary-button" id="clearChat" type="button">Clear</button>
+                  </div>
+                  <div class="chat-window" id="chatWindow" aria-live="polite"></div>
+                  <form class="chat-input" id="coachForm">
+                    <textarea
+                      id="coachPrompt"
+                      rows="3"
+                      placeholder="Ask: How do I test my champion before procurement?"
+                    ></textarea>
+                    <button class="primary-button" type="submit">Coach Me</button>
+                  </form>
+                </section>
+
+                <section class="panel insight-panel" aria-labelledby="snapshot-title">
+                  <div class="panel-header">
+                    <div>
+                      <p class="eyebrow">Deal snapshot</p>
+                      <h3 id="snapshot-title">Qualification gaps</h3>
+                    </div>
+                  </div>
+                  <div class="radial-wrap">
+                    <div class="radial" id="radialScore">
+                      <span id="radialValue">0%</span>
+                    </div>
+                  </div>
+                  <div class="gap-list" id="gapList"></div>
+                  <div class="quick-prompts">
+                    <button type="button" data-prompt="Diagnose the biggest risk in this deal.">Diagnose risk</button>
+                    <button type="button" data-prompt="Give me questions for the Economic Buyer.">Economic Buyer</button>
+                    <button type="button" data-prompt="Create a next call plan for this opportunity.">Next call plan</button>
+                  </div>
+                </section>
+              </div>
             </section>
 
-            <section class="panel insight-panel" aria-labelledby="snapshot-title">
-              <div class="panel-header">
-                <div>
-                  <p class="eyebrow">Deal snapshot</p>
-                  <h3 id="snapshot-title">Qualification gaps</h3>
+            <section class="view" id="scorecard">
+              <section class="panel">
+                <div class="panel-header">
+                  <div>
+                    <p class="eyebrow">Honest inspection</p>
+                    <h3>Score each MEDDPICC element</h3>
+                  </div>
+                  <button class="secondary-button" id="exportSummary" type="button">Export Summary</button>
                 </div>
-              </div>
-              <div class="radial-wrap">
-                <div class="radial" id="radialScore">
-                  <span id="radialValue">0%</span>
+                <div class="score-grid" id="scoreGrid"></div>
+              </section>
+            </section>
+
+            <section class="view" id="action-plan">
+              <section class="panel">
+                <div class="panel-header">
+                  <div>
+                    <p class="eyebrow">Generated plan</p>
+                    <h3>Actions to de-risk the deal</h3>
+                  </div>
+                  <button class="primary-button" id="regeneratePlan" type="button">Regenerate</button>
                 </div>
-              </div>
-              <div class="gap-list" id="gapList"></div>
-              <div class="quick-prompts">
-                <button type="button" data-prompt="Diagnose the biggest risk in this deal.">Diagnose risk</button>
-                <button type="button" data-prompt="Give me questions for the Economic Buyer.">Economic Buyer</button>
-                <button type="button" data-prompt="Create a next call plan for this opportunity.">Next call plan</button>
-              </div>
+                <div class="plan-list" id="planList"></div>
+              </section>
+            </section>
+
+            <section class="view" id="library">
+              <section class="panel">
+                <div class="panel-header">
+                  <div>
+                    <p class="eyebrow">Coaching playbook</p>
+                    <h3>Element-by-element guidance</h3>
+                  </div>
+                </div>
+                <div class="library-grid" id="libraryGrid"></div>
+              </section>
             </section>
           </div>
-        </section>
-
-        <section class="view" id="scorecard">
-          <section class="panel">
-            <div class="panel-header">
-              <div>
-                <p class="eyebrow">Honest inspection</p>
-                <h3>Score each MEDDPICC element</h3>
-              </div>
-              <button class="secondary-button" id="exportSummary" type="button">Export Summary</button>
-            </div>
-            <div class="score-grid" id="scoreGrid"></div>
-          </section>
-        </section>
-
-        <section class="view" id="action-plan">
-          <section class="panel">
-            <div class="panel-header">
-              <div>
-                <p class="eyebrow">Generated plan</p>
-                <h3>Actions to de-risk the deal</h3>
-              </div>
-              <button class="primary-button" id="regeneratePlan" type="button">Regenerate</button>
-            </div>
-            <div class="plan-list" id="planList"></div>
-          </section>
-        </section>
-
-        <section class="view" id="library">
-          <section class="panel">
-            <div class="panel-header">
-              <div>
-                <p class="eyebrow">Coaching playbook</p>
-                <h3>Element-by-element guidance</h3>
-              </div>
-            </div>
-            <div class="library-grid" id="libraryGrid"></div>
-          </section>
-        </section>
-      </main>
-    </div>
+        </div>
+      </section>
+    </main>
 
     <template id="messageTemplate">
       <article class="message">

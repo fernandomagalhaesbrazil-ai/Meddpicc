@@ -347,11 +347,27 @@ function renderAll() {
 
 tabs.forEach((tab) => {
   tab.addEventListener("click", () => {
+    activateView(tab.dataset.view, tab.textContent.trim());
+  });
+});
+
+function activateView(viewId, title) {
     tabs.forEach((item) => item.classList.remove("active"));
     views.forEach((view) => view.classList.remove("active"));
-    tab.classList.add("active");
-    document.querySelector(`#${tab.dataset.view}`).classList.add("active");
-    pageTitle.textContent = tab.textContent.trim();
+    const selectedTab = document.querySelector(`.nav-tab[data-view="${viewId}"]`);
+    const selectedView = document.querySelector(`#${viewId}`);
+    if (!selectedTab || !selectedView) return;
+    selectedTab.classList.add("active");
+    selectedView.classList.add("active");
+    pageTitle.textContent = title || selectedTab.textContent.trim();
+}
+
+document.querySelectorAll("[data-jump]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const viewId = button.dataset.jump;
+    const selectedTab = document.querySelector(`.nav-tab[data-view="${viewId}"]`);
+    activateView(viewId, selectedTab?.textContent.trim());
+    document.querySelector("#workspace").scrollIntoView({ behavior: "smooth", block: "start" });
   });
 });
 
