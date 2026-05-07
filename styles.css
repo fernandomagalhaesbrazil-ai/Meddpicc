@@ -371,6 +371,7 @@ button {
 }
 
 .deal-card,
+.repository-card,
 .panel {
   background: var(--panel);
   border: 1px solid var(--line);
@@ -382,6 +383,42 @@ button {
   display: grid;
   gap: 14px;
   padding: 16px;
+}
+
+.repository-card {
+  display: grid;
+  gap: 13px;
+  padding: 16px;
+}
+
+.repository-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.repository-header strong {
+  display: block;
+  line-height: 1.25;
+}
+
+.repository-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.repository-controls,
+.repository-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.repository-actions {
+  grid-template-columns: 1fr 1fr auto;
+  align-items: center;
 }
 
 .deal-card-header,
@@ -557,6 +594,51 @@ textarea:focus {
   color: var(--blue);
   background: transparent;
   border: 0;
+}
+
+.text-button.danger {
+  color: var(--red);
+}
+
+.modal-backdrop {
+  position: fixed;
+  z-index: 40;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(17, 24, 39, 0.48);
+}
+
+.modal-backdrop[hidden] {
+  display: none;
+}
+
+.auth-modal {
+  width: min(460px, 100%);
+  padding: 22px;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+.auth-modal h2 {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.08;
+}
+
+.auth-modal p {
+  margin: 16px 0 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.auth-form {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
 }
 
 .radial-wrap {
@@ -795,6 +877,7 @@ textarea:focus {
   .criteria-row,
   .nav-tabs,
   .chat-input,
+  .repository-actions,
   .plan-item {
     grid-template-columns: 1fr;
   }

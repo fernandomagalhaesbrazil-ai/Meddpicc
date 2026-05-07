@@ -12,7 +12,35 @@ const elementKeys = [
 const copy = {
   en: {
     htmlLang: "en",
-    nav: { signIn: "Sign In" },
+    nav: { signIn: "Sign In", signedIn: (name) => name },
+    auth: {
+      eyebrow: "Deal repository",
+      title: "Sign in to save your deals",
+      body: "This static version stores your deal repository in this browser. Use a real email so the profile feels familiar; no password is required.",
+      name: "Name",
+      email: "Email",
+      namePlaceholder: "Your name",
+      emailPlaceholder: "you@company.com",
+      submit: "Continue",
+      close: "Close",
+      signOut: "Sign out"
+    },
+    repository: {
+      title: "Deal repository",
+      signedOut: "Sign in to save deals",
+      signedOutNote: "Create a local profile to keep multiple MEDDPICC scorecards in this browser.",
+      signedIn: (name, count) => `${name}'s deals (${count})`,
+      signedInNote: "Saved locally in this browser. Use Save after changing a deal.",
+      savedDeals: "Saved deals",
+      newDeal: "New Deal",
+      saveDeal: "Save",
+      deleteDeal: "Delete",
+      newDealName: "New deal",
+      savedMessage: "Deal saved to your repository.",
+      createdMessage: "New deal created in your repository.",
+      deletedMessage: "Deal deleted from your repository.",
+      confirmDelete: "Delete this saved deal?"
+    },
     heroBadge: "⚡ Built for B2B Sales Teams",
     heroTitle: "Win More Deals with <span>MEDDPICC</span> Discipline",
     heroText:
@@ -214,7 +242,35 @@ const copy = {
   },
   pt: {
     htmlLang: "pt-BR",
-    nav: { signIn: "Entrar" },
+    nav: { signIn: "Entrar", signedIn: (name) => name },
+    auth: {
+      eyebrow: "Repositório de negócios",
+      title: "Entre para salvar seus negócios",
+      body: "Esta versão estática salva seu repositório de negócios neste navegador. Use um email real para reconhecer o perfil; não precisa de senha.",
+      name: "Nome",
+      email: "Email",
+      namePlaceholder: "Seu nome",
+      emailPlaceholder: "voce@empresa.com",
+      submit: "Continuar",
+      close: "Fechar",
+      signOut: "Sair"
+    },
+    repository: {
+      title: "Repositório de negócios",
+      signedOut: "Entre para salvar negócios",
+      signedOutNote: "Crie um perfil local para manter vários scorecards MEDDPICC neste navegador.",
+      signedIn: (name, count) => `Negócios de ${name} (${count})`,
+      signedInNote: "Salvo localmente neste navegador. Use Salvar depois de alterar um negócio.",
+      savedDeals: "Negócios salvos",
+      newDeal: "Novo negócio",
+      saveDeal: "Salvar",
+      deleteDeal: "Excluir",
+      newDealName: "Novo negócio",
+      savedMessage: "Negócio salvo no seu repositório.",
+      createdMessage: "Novo negócio criado no seu repositório.",
+      deletedMessage: "Negócio excluído do seu repositório.",
+      confirmDelete: "Excluir este negócio salvo?"
+    },
     heroBadge: "⚡ Criado para equipes de vendas B2B",
     heroTitle: "Ganhe Mais Negócios com Disciplina <span>MEDDPICC</span>",
     heroText:
@@ -417,7 +473,35 @@ const copy = {
   },
   es: {
     htmlLang: "es",
-    nav: { signIn: "Iniciar sesión" },
+    nav: { signIn: "Iniciar sesión", signedIn: (name) => name },
+    auth: {
+      eyebrow: "Repositorio de oportunidades",
+      title: "Inicia sesión para guardar tus oportunidades",
+      body: "Esta versión estática guarda tu repositorio de oportunidades en este navegador. Usa un email real para reconocer el perfil; no requiere contraseña.",
+      name: "Nombre",
+      email: "Email",
+      namePlaceholder: "Tu nombre",
+      emailPlaceholder: "tu@empresa.com",
+      submit: "Continuar",
+      close: "Cerrar",
+      signOut: "Cerrar sesión"
+    },
+    repository: {
+      title: "Repositorio de oportunidades",
+      signedOut: "Inicia sesión para guardar oportunidades",
+      signedOutNote: "Crea un perfil local para mantener varios scorecards MEDDPICC en este navegador.",
+      signedIn: (name, count) => `Oportunidades de ${name} (${count})`,
+      signedInNote: "Guardado localmente en este navegador. Usa Guardar después de cambiar una oportunidad.",
+      savedDeals: "Oportunidades guardadas",
+      newDeal: "Nueva oportunidad",
+      saveDeal: "Guardar",
+      deleteDeal: "Eliminar",
+      newDealName: "Nueva oportunidad",
+      savedMessage: "Oportunidad guardada en tu repositorio.",
+      createdMessage: "Nueva oportunidad creada en tu repositorio.",
+      deletedMessage: "Oportunidad eliminada de tu repositorio.",
+      confirmDelete: "¿Eliminar esta oportunidad guardada?"
+    },
     heroBadge: "⚡ Creado para equipos de ventas B2B",
     heroTitle: "Gana Más Negocios con Disciplina <span>MEDDPICC</span>",
     heroText:
@@ -623,6 +707,9 @@ const copy = {
 
 const defaultState = {
   lang: "en",
+  user: null,
+  deals: [],
+  currentDealId: null,
   dealName: "Acme expansion",
   dealStage: "proposal",
   closeDate: "",
@@ -646,6 +733,13 @@ const libraryGrid = document.querySelector("#libraryGrid");
 const planList = document.querySelector("#planList");
 const chatWindow = document.querySelector("#chatWindow");
 const messageTemplate = document.querySelector("#messageTemplate");
+const signinButton = document.querySelector("#signinButton");
+const authModal = document.querySelector("#authModal");
+const authForm = document.querySelector("#authForm");
+const repositoryControls = document.querySelector("#repositoryControls");
+const repositoryStatus = document.querySelector("#repositoryStatus");
+const repositoryNote = document.querySelector("#repositoryNote");
+const dealRepository = document.querySelector("#dealRepository");
 
 function t() {
   return copy[state.lang] || copy.en;
@@ -671,11 +765,49 @@ function normalizeStage(value) {
   return map[value] || value || "proposal";
 }
 
+function createId() {
+  return `deal-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+function currentDealSnapshot(id = state.currentDealId || createId()) {
+  return {
+    id,
+    name: state.dealName,
+    stage: state.dealStage,
+    closeDate: state.closeDate,
+    scores: { ...state.scores },
+    notes: { ...state.notes },
+    chat: structuredClone(state.chat || []),
+    updatedAt: new Date().toISOString()
+  };
+}
+
+function applyDeal(deal) {
+  state.currentDealId = deal.id;
+  state.dealName = deal.name;
+  state.dealStage = normalizeStage(deal.stage);
+  state.closeDate = deal.closeDate || "";
+  state.scores = { ...defaultState.scores, ...deal.scores };
+  state.notes = { ...defaultState.notes, ...deal.notes };
+  state.chat = Array.isArray(deal.chat) && deal.chat.length ? structuredClone(deal.chat) : defaultChat();
+}
+
+function syncCurrentDeal() {
+  if (!state.user || !state.currentDealId) return;
+  const snapshot = currentDealSnapshot(state.currentDealId);
+  const index = state.deals.findIndex((deal) => deal.id === state.currentDealId);
+  if (index >= 0) state.deals[index] = snapshot;
+  else state.deals.unshift(snapshot);
+}
+
 function loadState() {
   try {
     const stored = JSON.parse(localStorage.getItem("meddpicc-coach-state"));
     const next = { ...defaultState, ...stored };
     next.lang = copy[next.lang] ? next.lang : "en";
+    next.user = next.user || null;
+    next.deals = Array.isArray(next.deals) ? next.deals : [];
+    next.currentDealId = next.currentDealId || null;
     next.dealStage = normalizeStage(next.dealStage);
     next.scores = { ...defaultState.scores, ...next.scores };
     next.notes = { ...defaultState.notes, ...next.notes };
@@ -687,6 +819,7 @@ function loadState() {
 }
 
 function saveState() {
+  syncCurrentDeal();
   localStorage.setItem("meddpicc-coach-state", JSON.stringify(state));
 }
 
@@ -732,7 +865,7 @@ function weakestElements(limit = 3) {
 function renderStaticCopy() {
   const text = t();
   document.documentElement.lang = text.htmlLang;
-  setText(".signin-link", text.nav.signIn);
+  setText(".signin-link", state.user ? text.nav.signedIn(state.user.name) : text.nav.signIn);
   setText(".hero-badge", text.heroBadge);
   setHtml(".hero h1", text.heroTitle);
   setText(".hero p", text.heroText);
@@ -746,6 +879,25 @@ function renderStaticCopy() {
   setText(".topbar .eyebrow", text.coach.topEyebrow);
   setText(".deal-card .eyebrow", text.deal.eyebrow);
   setText("#resetDeal", text.deal.reset);
+  setText(".repository-card .eyebrow", text.repository.title);
+  setText("#repositoryStatus", state.user ? text.repository.signedIn(state.user.name, state.deals.length) : text.repository.signedOut);
+  setText("#repositoryNote", state.user ? text.repository.signedInNote : text.repository.signedOutNote);
+  setText("#signOutButton", text.auth.signOut);
+  setText("#newDealButton", text.repository.newDeal);
+  setText("#saveDealButton", text.repository.saveDeal);
+  setText("#deleteDealButton", text.repository.deleteDeal);
+  document.querySelector(".repository-controls label span").textContent = text.repository.savedDeals;
+  repositoryControls.hidden = !state.user;
+  document.querySelector("#signOutButton").hidden = !state.user;
+  setText("#authEyebrow", text.auth.eyebrow);
+  setText("#authTitle", text.auth.title);
+  setText("#authBody", text.auth.body);
+  setText("#closeAuthModal", text.auth.close);
+  setText("#authSubmit", text.auth.submit);
+  document.querySelectorAll(".auth-form label span")[0].textContent = text.auth.name;
+  document.querySelectorAll(".auth-form label span")[1].textContent = text.auth.email;
+  document.querySelector("#authName").placeholder = text.auth.namePlaceholder;
+  document.querySelector("#authEmail").placeholder = text.auth.emailPlaceholder;
   document.querySelectorAll(".deal-card label span")[0].textContent = text.deal.opportunity;
   document.querySelectorAll(".deal-card label span")[1].textContent = text.deal.stage;
   document.querySelectorAll(".deal-card label span")[2].textContent = text.deal.closeDate;
@@ -759,6 +911,7 @@ function renderStaticCopy() {
   });
   renderCriteria();
   renderStageOptions();
+  renderRepository();
 }
 
 function renderCriteria() {
@@ -776,6 +929,21 @@ function renderStageOptions() {
     .map(([value, label]) => `<option value="${value}">${escapeHtml(label)}</option>`)
     .join("");
   stageSelect.value = normalizeStage(state.dealStage);
+}
+
+function renderRepository() {
+  if (!state.user) {
+    dealRepository.innerHTML = "";
+    return;
+  }
+  dealRepository.innerHTML = state.deals
+    .map((deal) => {
+      const updated = deal.updatedAt ? new Date(deal.updatedAt).toLocaleDateString() : "";
+      const label = updated ? `${deal.name} - ${updated}` : deal.name;
+      return `<option value="${escapeHtml(deal.id)}">${escapeHtml(label)}</option>`;
+    })
+    .join("");
+  dealRepository.value = state.currentDealId || "";
 }
 
 function renderShell() {
@@ -998,6 +1166,75 @@ function activateView(viewId, title) {
   pageTitle.textContent = title || t().tabs[viewId] || selectedTab.textContent.trim();
 }
 
+function openAuthModal() {
+  authModal.hidden = false;
+  document.querySelector("#authName").value = state.user?.name || "";
+  document.querySelector("#authEmail").value = state.user?.email || "";
+  document.querySelector("#authName").focus();
+}
+
+function closeAuthModal() {
+  authModal.hidden = true;
+}
+
+function ensureRepositoryDeal() {
+  if (!state.currentDealId) state.currentDealId = createId();
+  syncCurrentDeal();
+  if (state.deals.length === 0) state.deals.push(currentDealSnapshot(state.currentDealId));
+}
+
+function addRepositoryMessage(text) {
+  state.chat.push({ role: "coach", text });
+}
+
+function createNewDeal() {
+  const text = t();
+  syncCurrentDeal();
+  state.currentDealId = createId();
+  state.dealName = text.repository.newDealName;
+  state.dealStage = "discovery";
+  state.closeDate = "";
+  state.scores = { ...defaultState.scores };
+  state.notes = { ...defaultState.notes };
+  state.chat = defaultChat();
+  syncCurrentDeal();
+  addRepositoryMessage(text.repository.createdMessage);
+  saveState();
+  renderAll();
+}
+
+function saveRepositoryDeal() {
+  if (!state.user) {
+    openAuthModal();
+    return;
+  }
+  addRepositoryMessage(t().repository.savedMessage);
+  saveState();
+  renderAll();
+}
+
+function deleteRepositoryDeal() {
+  if (!state.user || !state.currentDealId) return;
+  if (!window.confirm(t().repository.confirmDelete)) return;
+  state.deals = state.deals.filter((deal) => deal.id !== state.currentDealId);
+  if (state.deals.length) {
+    applyDeal(state.deals[0]);
+    addRepositoryMessage(t().repository.deletedMessage);
+  } else {
+    state.currentDealId = createId();
+    state.dealName = t().repository.newDealName;
+    state.dealStage = "discovery";
+    state.closeDate = "";
+    state.scores = { ...defaultState.scores };
+    state.notes = { ...defaultState.notes };
+    state.chat = defaultChat();
+    syncCurrentDeal();
+    addRepositoryMessage(t().repository.deletedMessage);
+  }
+  saveState();
+  renderAll();
+}
+
 tabs.forEach((tab) => {
   tab.addEventListener("click", () => {
     activateView(tab.dataset.view);
@@ -1011,6 +1248,55 @@ document.querySelectorAll("[data-jump]").forEach((button) => {
     document.querySelector("#workspace").scrollIntoView({ behavior: "smooth", block: "start" });
   });
 });
+
+signinButton.addEventListener("click", () => {
+  if (state.user) {
+    document.querySelector("#workspace").scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+  openAuthModal();
+});
+
+document.querySelector("#heroSignInButton").addEventListener("click", openAuthModal);
+document.querySelector("#closeAuthModal").addEventListener("click", closeAuthModal);
+
+authModal.addEventListener("click", (event) => {
+  if (event.target === authModal) closeAuthModal();
+});
+
+authForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  state.user = {
+    name: document.querySelector("#authName").value.trim(),
+    email: document.querySelector("#authEmail").value.trim(),
+    signedInAt: new Date().toISOString()
+  };
+  ensureRepositoryDeal();
+  saveState();
+  closeAuthModal();
+  renderAll();
+  document.querySelector("#workspace").scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+document.querySelector("#signOutButton").addEventListener("click", () => {
+  syncCurrentDeal();
+  state.user = null;
+  saveState();
+  renderAll();
+});
+
+dealRepository.addEventListener("change", (event) => {
+  syncCurrentDeal();
+  const deal = state.deals.find((item) => item.id === event.target.value);
+  if (!deal) return;
+  applyDeal(deal);
+  saveState();
+  renderAll();
+});
+
+document.querySelector("#newDealButton").addEventListener("click", createNewDeal);
+document.querySelector("#saveDealButton").addEventListener("click", saveRepositoryDeal);
+document.querySelector("#deleteDealButton").addEventListener("click", deleteRepositoryDeal);
 
 document.querySelectorAll("[data-lang]").forEach((button) => {
   button.addEventListener("click", () => {
@@ -1080,11 +1366,17 @@ document.querySelector("#clearChat").addEventListener("click", () => {
 
 document.querySelector("#resetDeal").addEventListener("click", () => {
   const lang = state.lang;
+  const user = state.user;
+  const deals = state.deals;
+  const currentDealId = state.currentDealId;
   state = structuredClone(defaultState);
   state.lang = lang;
+  state.user = user;
+  state.deals = deals;
+  state.currentDealId = currentDealId;
   state.dealName = t().deal.defaultName;
   state.chat = defaultChat();
-  localStorage.setItem("meddpicc-coach-state", JSON.stringify(state));
+  saveState();
   renderAll();
 });
 

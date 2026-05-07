@@ -19,7 +19,7 @@
           <button data-lang="pt" aria-pressed="false" type="button">PT</button>
           <button data-lang="es" aria-pressed="false" type="button">ES</button>
         </div>
-        <button class="signin-link" data-jump="coach" type="button">Sign In</button>
+        <button class="signin-link" id="signinButton" type="button">Sign In</button>
       </div>
     </header>
 
@@ -35,7 +35,7 @@
           </p>
           <div class="hero-actions">
             <button class="primary-hero" data-jump="coach" type="button">Get Started Free ›</button>
-            <button class="ghost-hero" data-jump="coach" type="button">Sign In</button>
+            <button class="ghost-hero" id="heroSignInButton" type="button">Sign In</button>
             <button class="ghost-hero" data-jump="scorecard" type="button">See a Live Example</button>
           </div>
         </div>
@@ -81,6 +81,30 @@
               <button class="nav-tab" data-view="action-plan" type="button">Action Plan</button>
               <button class="nav-tab" data-view="library" type="button">Playbook</button>
             </nav>
+
+            <section class="repository-card" aria-label="Deal repository">
+              <div class="repository-header">
+                <div>
+                  <p class="eyebrow">Deal repository</p>
+                  <strong id="repositoryStatus">Sign in to save deals</strong>
+                </div>
+                <button class="text-button" id="signOutButton" type="button" hidden>Sign out</button>
+              </div>
+              <p class="repository-note" id="repositoryNote">
+                Create a local profile to keep multiple MEDDPICC scorecards in this browser.
+              </p>
+              <div class="repository-controls" id="repositoryControls" hidden>
+                <label>
+                  <span>Saved deals</span>
+                  <select id="dealRepository"></select>
+                </label>
+                <div class="repository-actions">
+                  <button class="secondary-button" id="newDealButton" type="button">New Deal</button>
+                  <button class="secondary-button" id="saveDealButton" type="button">Save</button>
+                  <button class="text-button danger" id="deleteDealButton" type="button">Delete</button>
+                </div>
+              </div>
+            </section>
 
             <section class="deal-card" aria-label="Current deal">
               <div class="deal-card-header">
@@ -207,6 +231,32 @@
         <div class="message-body"></div>
       </article>
     </template>
+
+    <div class="modal-backdrop" id="authModal" hidden>
+      <section class="auth-modal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow" id="authEyebrow">Deal repository</p>
+            <h2 id="authTitle">Sign in to save your deals</h2>
+          </div>
+          <button class="text-button" id="closeAuthModal" type="button">Close</button>
+        </div>
+        <p id="authBody">
+          This static version stores your deal repository in this browser.
+        </p>
+        <form class="auth-form" id="authForm">
+          <label>
+            <span>Name</span>
+            <input id="authName" type="text" autocomplete="name" required />
+          </label>
+          <label>
+            <span>Email</span>
+            <input id="authEmail" type="email" autocomplete="email" required />
+          </label>
+          <button class="primary-button" id="authSubmit" type="submit">Continue</button>
+        </form>
+      </section>
+    </div>
 
     <script src="app.js"></script>
   </body>
