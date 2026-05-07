@@ -23,12 +23,16 @@ const copy = {
       namePlaceholder: "Your name",
       emailPlaceholder: "you@company.com",
       passwordPlaceholder: "At least 6 characters",
-      submit: "Sign in / create account",
+      submit: "Sign in",
+      create: "Create account",
       close: "Close",
       signOut: "Sign out",
       firebaseReady: "Synced.",
       localFallback: "Saved on this browser.",
-      authError: "Could not sign in. Check the email and password."
+      authError: "Could not sign in. Check the email and password.",
+      invalidCredential: "Wrong password or account method. Try again or create a new account with another email.",
+      emailInUse: "This email already has an account. Use Sign in instead.",
+      weakPassword: "Use at least 6 characters for the password."
     },
     repository: {
       title: "Deal repository",
@@ -258,12 +262,16 @@ const copy = {
       namePlaceholder: "Seu nome",
       emailPlaceholder: "voce@empresa.com",
       passwordPlaceholder: "Pelo menos 6 caracteres",
-      submit: "Entrar / criar conta",
+      submit: "Entrar",
+      create: "Criar conta",
       close: "Fechar",
       signOut: "Sair",
       firebaseReady: "Sincronizado.",
       localFallback: "Salvo neste navegador.",
-      authError: "Não foi possível entrar. Verifique email e senha."
+      authError: "Não foi possível entrar. Verifique email e senha.",
+      invalidCredential: "Senha incorreta ou método de conta diferente. Tente novamente ou crie outra conta com outro email.",
+      emailInUse: "Este email já tem conta. Use Entrar.",
+      weakPassword: "Use pelo menos 6 caracteres na senha."
     },
     repository: {
       title: "Repositório de negócios",
@@ -494,12 +502,16 @@ const copy = {
       namePlaceholder: "Tu nombre",
       emailPlaceholder: "tu@empresa.com",
       passwordPlaceholder: "Al menos 6 caracteres",
-      submit: "Iniciar / crear cuenta",
+      submit: "Iniciar sesión",
+      create: "Crear cuenta",
       close: "Cerrar",
       signOut: "Cerrar sesión",
       firebaseReady: "Sincronizado.",
       localFallback: "Guardado en este navegador.",
-      authError: "No se pudo iniciar sesión. Revisa email y contraseña."
+      authError: "No se pudo iniciar sesión. Revisa email y contraseña.",
+      invalidCredential: "Contraseña incorrecta o método de cuenta distinto. Intenta de nuevo o crea otra cuenta con otro email.",
+      emailInUse: "Este email ya tiene una cuenta. Usa Iniciar sesión.",
+      weakPassword: "Usa al menos 6 caracteres para la contraseña."
     },
     repository: {
       title: "Repositorio de oportunidades",
@@ -881,19 +893,30 @@ async function deleteCurrentDealFromFirebase(dealId) {
 
 async function signIntoFirebase(email, password, name) {
   await loadFirebase();
-  try {
-    await firebaseState.auth.signInWithEmailAndPassword(email, password);
-  } catch (error) {
-    if (["auth/user-not-found", "auth/email-already-in-use"].includes(error.code)) {
-      await firebaseState.auth.createUserWithEmailAndPassword(email, password);
-    } else {
-      throw error;
-    }
-  }
+  await firebaseState.auth.signInWithEmailAndPassword(email, password);
   firebaseState.user = firebaseState.auth.currentUser;
-  if (firebaseState.user && !firebaseState.user.displayName) {
+  if (firebaseState.user && !firebaseState.user.displayName && name) {
     await firebaseState.user.updateProfile({ displayName: name });
   }
+}
+
+async function createFirebaseAccount(email, password, name) {
+  await loadFirebase();
+  await firebaseState.auth.createUserWithEmailAndPassword(email, password);
+  firebaseState.user = firebaseState.auth.currentUser;
+  if (firebaseState.user && name) {
+    await firebaseState.user.updateProfile({ displayName: name });
+  }
+}
+
+function friendlyAuthError(error) {
+  const text = t().auth;
+  if (["auth/invalid-credential", "auth/wrong-password", "auth/user-not-found"].includes(error.code)) {
+    return text.invalidCredential;
+  }
+  if (error.code === "auth/email-already-in-use") return text.emailInUse;
+  if (error.code === "auth/weak-password") return text.weakPassword;
+  return text.authError;
 }
 
 function loadState() {
@@ -1001,6 +1024,7 @@ function renderStaticCopy() {
   setText("#authBody", text.auth.body);
   setText("#closeAuthModal", text.auth.close);
   setText("#authSubmit", text.auth.submit);
+  setText("#authCreate", text.auth.create);
   document.querySelectorAll(".auth-form label span")[0].textContent = text.auth.name;
   document.querySelectorAll(".auth-form label span")[1].textContent = text.auth.email;
   document.querySelectorAll(".auth-form label span")[2].textContent = text.auth.password;
@@ -1378,6 +1402,14 @@ authModal.addEventListener("click", (event) => {
   if (event.target === authModal) closeAuthModal();
 });
 
+let authAction = "signin";
+
+document.querySelectorAll("[data-auth-action]").forEach((button) => {
+  button.addEventListener("click", () => {
+    authAction = button.dataset.authAction;
+  });
+});
+
 authForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const errorNode = document.querySelector("#authError");
@@ -1387,7 +1419,11 @@ authForm.addEventListener("submit", async (event) => {
   errorNode.hidden = true;
   try {
     if (firebaseState.enabled) {
-      await signIntoFirebase(email, password, name);
+      if (authAction === "create") {
+        await createFirebaseAccount(email, password, name);
+      } else {
+        await signIntoFirebase(email, password, name);
+      }
       state.user = {
         id: firebaseState.user.uid,
         name: firebaseState.user.displayName || name,
@@ -1405,7 +1441,7 @@ authForm.addEventListener("submit", async (event) => {
     renderAll();
     document.querySelector("#workspace").scrollIntoView({ behavior: "smooth", block: "start" });
   } catch (error) {
-    errorNode.textContent = error.message || t().auth.authError;
+    errorNode.textContent = friendlyAuthError(error);
     errorNode.hidden = false;
   }
 });

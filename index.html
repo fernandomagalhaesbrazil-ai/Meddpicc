@@ -258,7 +258,10 @@
             <input id="authPassword" type="password" autocomplete="current-password" minlength="6" required />
           </label>
           <p class="auth-error" id="authError" role="alert" hidden></p>
-          <button class="primary-button" id="authSubmit" type="submit">Continue</button>
+          <div class="auth-actions">
+            <button class="primary-button" id="authSubmit" data-auth-action="signin" type="submit">Sign in</button>
+            <button class="secondary-button" id="authCreate" data-auth-action="create" type="submit">Create account</button>
+          </div>
         </form>
       </section>
     </div>
