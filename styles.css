@@ -137,6 +137,7 @@ button {
 
 .contact-link {
   width: 34px;
+  height: 34px;
   border: 1px solid #e0e5ff;
   border-radius: 9px;
   background: var(--blue-soft);
@@ -148,6 +149,13 @@ button {
   color: white;
   background: var(--blue);
   border-color: var(--blue);
+}
+
+.site-footer {
+  display: flex;
+  justify-content: center;
+  padding: 22px 20px 34px;
+  background: #f5f7fb;
 }
 
 .hero {
