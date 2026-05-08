@@ -153,9 +153,19 @@ button {
 
 .site-footer {
   display: flex;
+  align-items: center;
   justify-content: center;
+  gap: 14px;
   padding: 22px 20px 34px;
+  color: var(--muted);
   background: #f5f7fb;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.site-footer strong {
+  color: var(--ink);
+  font-weight: 900;
 }
 
 .hero {
