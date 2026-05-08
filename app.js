@@ -1009,7 +1009,7 @@ function renderStaticCopy() {
   const text = t();
   const isFirebaseSynced = state.user?.provider === "firebase";
   document.documentElement.lang = text.htmlLang;
-  setText("#contactLink", text.nav.contact);
+  document.querySelector("#contactLink").setAttribute("aria-label", text.nav.contact);
   setText(".signin-link", state.user ? text.nav.signedIn(state.user.name) : text.nav.signIn);
   setText(".hero-badge", text.heroBadge);
   setHtml(".hero h1", text.heroTitle);

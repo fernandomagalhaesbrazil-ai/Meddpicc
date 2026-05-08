@@ -125,6 +125,7 @@ button {
 .contact-link {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   min-height: 34px;
   color: var(--blue);
   background: transparent;
@@ -132,6 +133,21 @@ button {
   font-size: 14px;
   font-weight: 850;
   text-decoration: none;
+}
+
+.contact-link {
+  width: 34px;
+  border: 1px solid #e0e5ff;
+  border-radius: 9px;
+  background: var(--blue-soft);
+  font-size: 17px;
+  line-height: 1;
+}
+
+.contact-link:hover {
+  color: white;
+  background: var(--blue);
+  border-color: var(--blue);
 }
 
 .hero {
@@ -905,10 +921,6 @@ textarea:focus {
 
   .signin-link {
     font-size: 13px;
-  }
-
-  .contact-link {
-    display: none;
   }
 
   .hero {
