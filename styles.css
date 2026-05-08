@@ -152,15 +152,22 @@ button {
 }
 
 .site-footer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  padding: 22px 20px 34px;
+  padding: 0 28px 38px;
   color: var(--muted);
   background: #f5f7fb;
   font-size: 14px;
   font-weight: 750;
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  width: min(1220px, 100%);
+  margin: 0 auto;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
 }
 
 .site-footer strong {
@@ -966,6 +973,14 @@ textarea:focus {
 
   .workspace-section {
     padding: 40px 14px 56px;
+  }
+
+  .site-footer {
+    padding-inline: 14px;
+  }
+
+  .footer-inner {
+    gap: 10px;
   }
 
   .workspace-heading {
