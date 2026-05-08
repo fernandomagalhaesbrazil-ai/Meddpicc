@@ -121,7 +121,8 @@ button {
   box-shadow: 0 1px 4px rgba(17, 24, 39, 0.08);
 }
 
-.signin-link {
+.signin-link,
+.contact-link {
   display: inline-flex;
   align-items: center;
   min-height: 34px;
@@ -130,6 +131,7 @@ button {
   border: 0;
   font-size: 14px;
   font-weight: 850;
+  text-decoration: none;
 }
 
 .hero {
@@ -903,6 +905,10 @@ textarea:focus {
 
   .signin-link {
     font-size: 13px;
+  }
+
+  .contact-link {
+    display: none;
   }
 
   .hero {

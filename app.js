@@ -12,7 +12,7 @@ const elementKeys = [
 const copy = {
   en: {
     htmlLang: "en",
-    nav: { signIn: "Sign In", signedIn: (name) => name },
+    nav: { signIn: "Sign In", signedIn: (name) => name, contact: "Contact" },
     auth: {
       eyebrow: "Deal repository",
       title: "Sign in to save your deals",
@@ -255,7 +255,7 @@ const copy = {
   },
   pt: {
     htmlLang: "pt-BR",
-    nav: { signIn: "Entrar", signedIn: (name) => name },
+    nav: { signIn: "Entrar", signedIn: (name) => name, contact: "Contato" },
     auth: {
       eyebrow: "Repositório de negócios",
       title: "Entre para salvar seus negócios",
@@ -499,7 +499,7 @@ const copy = {
   },
   es: {
     htmlLang: "es",
-    nav: { signIn: "Iniciar sesión", signedIn: (name) => name },
+    nav: { signIn: "Iniciar sesión", signedIn: (name) => name, contact: "Contacto" },
     auth: {
       eyebrow: "Repositorio de oportunidades",
       title: "Inicia sesión para guardar tus oportunidades",
@@ -1009,6 +1009,7 @@ function renderStaticCopy() {
   const text = t();
   const isFirebaseSynced = state.user?.provider === "firebase";
   document.documentElement.lang = text.htmlLang;
+  setText("#contactLink", text.nav.contact);
   setText(".signin-link", state.user ? text.nav.signedIn(state.user.name) : text.nav.signIn);
   setText(".hero-badge", text.heroBadge);
   setHtml(".hero h1", text.heroTitle);
