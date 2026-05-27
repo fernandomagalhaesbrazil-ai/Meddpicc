@@ -83,6 +83,20 @@ const copy = {
       stage: "Stage",
       closeDate: "Close date"
     },
+    exampleDeal: {
+      name: "Enterprise rollout",
+      message: "Live example loaded. Review the yellow areas first: Economic Buyer, Paper Process, and Champion.",
+      notes: {
+        metrics: "Buyer confirmed a $420k productivity target tied to rollout speed.",
+        economicBuyer: "Champion says CFO owns budget, but we have not met her yet.",
+        decisionCriteria: "Technical fit and time-to-value are documented.",
+        decisionProcess: "Security review, CFO approval, and procurement are mapped.",
+        paperProcess: "MSA redlines expected; legal timeline is not confirmed.",
+        identifyPain: "Delayed onboarding is creating churn risk in the enterprise segment.",
+        champion: "Champion is engaged, but has not yet secured access to the CFO.",
+        competition: "Incumbent is cheaper, but weaker on analytics and coaching workflow."
+      }
+    },
     stages: {
       discovery: "Discovery",
       validation: "Validation",
@@ -325,6 +339,20 @@ const copy = {
       untitled: "Negócio sem nome",
       stage: "Etapa",
       closeDate: "Data de fechamento"
+    },
+    exampleDeal: {
+      name: "Rollout enterprise",
+      message: "Exemplo ao vivo carregado. Revise primeiro as áreas amarelas: Comprador Econômico, Paper Process e Champion.",
+      notes: {
+        metrics: "O comprador confirmou uma meta de produtividade de $420k ligada à velocidade do rollout.",
+        economicBuyer: "O champion diz que a CFO controla o orçamento, mas ainda não falamos com ela.",
+        decisionCriteria: "Fit técnico e tempo até valor estão documentados.",
+        decisionProcess: "Revisão de segurança, aprovação da CFO e compras estão mapeados.",
+        paperProcess: "Redlines no MSA são esperadas; o prazo jurídico ainda não está confirmado.",
+        identifyPain: "Onboarding lento está criando risco de churn no segmento enterprise.",
+        champion: "Champion está engajado, mas ainda não garantiu acesso à CFO.",
+        competition: "Incumbente é mais barato, mas mais fraco em analytics e fluxo de coaching."
+      }
     },
     stages: {
       discovery: "Descoberta",
@@ -569,6 +597,20 @@ const copy = {
       untitled: "Oportunidad sin nombre",
       stage: "Etapa",
       closeDate: "Fecha de cierre"
+    },
+    exampleDeal: {
+      name: "Rollout enterprise",
+      message: "Ejemplo en vivo cargado. Revisa primero las áreas amarillas: Comprador Económico, Paper Process y Champion.",
+      notes: {
+        metrics: "El comprador confirmó una meta de productividad de $420k ligada a la velocidad del rollout.",
+        economicBuyer: "El champion dice que la CFO controla el presupuesto, pero aún no hablamos con ella.",
+        decisionCriteria: "Fit técnico y tiempo hasta valor están documentados.",
+        decisionProcess: "Revisión de seguridad, aprobación de la CFO y compras están mapeados.",
+        paperProcess: "Se esperan redlines en el MSA; el plazo legal aún no está confirmado.",
+        identifyPain: "El onboarding lento está creando riesgo de churn en el segmento enterprise.",
+        champion: "El champion está comprometido, pero aún no aseguró acceso a la CFO.",
+        competition: "El incumbente es más barato, pero más débil en analytics y flujo de coaching."
+      }
     },
     stages: {
       discovery: "Descubrimiento",
@@ -1343,6 +1385,38 @@ function addRepositoryMessage(text) {
   state.chat.push({ role: "coach", text });
 }
 
+async function loadLiveExample() {
+  const example = t().exampleDeal;
+  const closeDate = new Date();
+  closeDate.setDate(closeDate.getDate() + 21);
+
+  if (state.user) {
+    syncCurrentDeal();
+    await pushCurrentDealToFirebase();
+    state.currentDealId = createId();
+  } else {
+    state.currentDealId = null;
+  }
+
+  state.dealName = example.name;
+  state.dealStage = "proposal";
+  state.closeDate = closeDate.toISOString().slice(0, 10);
+  state.scores = {
+    metrics: 3,
+    economicBuyer: 1,
+    decisionCriteria: 2,
+    decisionProcess: 2,
+    paperProcess: 1,
+    identifyPain: 3,
+    champion: 1,
+    competition: 2
+  };
+  state.notes = { ...defaultState.notes, ...example.notes };
+  state.chat = [{ role: "coach", text: example.message }];
+  await saveStateAndRemote();
+  renderAll();
+}
+
 async function createNewDeal() {
   const text = t();
   syncCurrentDeal();
@@ -1401,8 +1475,11 @@ tabs.forEach((tab) => {
 });
 
 document.querySelectorAll("[data-jump]").forEach((button) => {
-  button.addEventListener("click", () => {
+  button.addEventListener("click", async () => {
     const viewId = button.dataset.jump;
+    if (viewId === "scorecard") {
+      await loadLiveExample();
+    }
     activateView(viewId);
     document.querySelector("#workspace").scrollIntoView({ behavior: "smooth", block: "start" });
   });
