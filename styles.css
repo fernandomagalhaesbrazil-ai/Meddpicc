@@ -759,6 +759,10 @@ textarea:focus {
   gap: 14px;
 }
 
+.gap-list {
+  gap: 8px;
+}
+
 .gap-item,
 .plan-item,
 .library-item,
@@ -769,6 +773,8 @@ textarea:focus {
 }
 
 .gap-item {
+  display: flex;
+  align-items: center;
   min-height: 40px;
   padding: 0 12px;
   width: 100%;
@@ -782,10 +788,16 @@ textarea:focus {
 }
 
 .gap-item:hover,
-.gap-item:focus-visible {
+.gap-item:focus-visible,
+.quick-prompts button:hover,
+.quick-prompts button:focus-visible {
   border-color: var(--blue);
   box-shadow: 0 8px 18px rgba(49, 84, 230, 0.12);
   outline: none;
+}
+
+.gap-item strong {
+  margin-bottom: 0;
 }
 
 .gap-item strong,
@@ -814,7 +826,7 @@ textarea:focus {
 .quick-prompts {
   display: grid;
   gap: 8px;
-  margin-top: 16px;
+  margin-top: 8px;
 }
 
 .quick-prompts button {
