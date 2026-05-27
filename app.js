@@ -1155,8 +1155,10 @@ function renderShell() {
 
   gapList.innerHTML = "";
   weakestElements().forEach((element) => {
-    const item = document.createElement("article");
+    const item = document.createElement("button");
     item.className = "gap-item";
+    item.type = "button";
+    item.dataset.prompt = element.prompts[0];
     item.innerHTML = `<strong>${escapeHtml(element.name)}</strong><p>${escapeHtml(element.guidance)}</p>`;
     gapList.append(item);
   });
@@ -1642,6 +1644,13 @@ document.querySelector("#coachForm").addEventListener("submit", (event) => {
 });
 
 document.querySelector(".quick-prompts").addEventListener("click", (event) => {
+  const button = event.target.closest("[data-prompt]");
+  if (!button) return;
+  document.querySelector("#coachPrompt").value = button.dataset.prompt;
+  document.querySelector("#coachForm").requestSubmit();
+});
+
+gapList.addEventListener("click", (event) => {
   const button = event.target.closest("[data-prompt]");
   if (!button) return;
   document.querySelector("#coachPrompt").value = button.dataset.prompt;

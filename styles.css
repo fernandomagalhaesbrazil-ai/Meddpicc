@@ -769,6 +769,21 @@ textarea:focus {
   border-radius: 12px;
 }
 
+.gap-item {
+  width: 100%;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.gap-item:hover,
+.gap-item:focus-visible {
+  border-color: var(--blue);
+  box-shadow: 0 8px 18px rgba(49, 84, 230, 0.12);
+  outline: none;
+}
+
 .gap-item strong,
 .plan-item strong,
 .library-item strong,
