@@ -763,18 +763,22 @@ textarea:focus {
 .plan-item,
 .library-item,
 .score-item {
-  padding: 13px;
   background: #fbfcff;
   border: 1px solid var(--line);
   border-radius: 12px;
 }
 
 .gap-item {
+  min-height: 40px;
+  padding: 0 12px;
   width: 100%;
   color: inherit;
   font: inherit;
   text-align: left;
+  background: #f8f9fb;
+  border-radius: 10px;
   cursor: pointer;
+  font-weight: 800;
 }
 
 .gap-item:hover,
@@ -790,6 +794,12 @@ textarea:focus {
 .score-item strong {
   display: block;
   margin-bottom: 6px;
+}
+
+.plan-item,
+.library-item,
+.score-item {
+  padding: 13px;
 }
 
 .gap-item p,
